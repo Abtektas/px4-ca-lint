@@ -17,3 +17,9 @@ Nothing has been released yet. The first release will be 0.1.0.
 - Rules CA001, CA002, CA003, CA004, CA010, CA011 and CA020.
 - Golden tests over the airframe scripts shipped with PX4 v1.17.0 and a
   cross-check against PX4 SITL.
+- `--format markdown` for reports that are pasted into issues and pull
+  requests.
+- `px4-ca-lint diff BEFORE AFTER` compares two parameter files: parameters,
+  matrix values and findings.
+- Engine builds for Linux x86_64, Linux arm64 and macOS arm64 in CI, packaged
+  with a checksum.

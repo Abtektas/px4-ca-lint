@@ -35,10 +35,18 @@ jobs:
           python -m pip install .
           px4-ca-lint --version
 
-  engine:
-    name: Engine, golden tests and SITL cross-check
-    runs-on: ubuntu-24.04
+  engine-linux:
+    name: Engine, Linux ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
     container: px4io/px4-dev:v1.17.0
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Get PX4
@@ -51,10 +59,48 @@ jobs:
         env:
           PX4_CA_ENGINE: build/engine/px4_ca_engine
         run: PX4_CA_PX4_DIR="$RUNNER_TEMP/px4" python3 -m unittest discover -s tests -t .
+      # the cross-check does not depend on the processor architecture
       - name: Build PX4 SITL
+        if: matrix.arch == 'x86_64'
         run: engine/build_sitl.sh "$RUNNER_TEMP/px4"
       - name: SITL cross-check
+        if: matrix.arch == 'x86_64'
         env:
           PX4_CA_ENGINE: build/engine/px4_ca_engine
           PX4_CA_SITL_BUILD: build/sitl
         run: python3 -m unittest -v tests.test_sitl
+      - name: Package the engine
+        run: engine/package.sh build/engine/px4_ca_engine "linux-${{ matrix.arch }}" dist
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: px4_ca_engine-linux-${{ matrix.arch }}
+          path: dist/
+          if-no-files-found: error
+
+  engine-macos:
+    name: Engine, macOS arm64
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Get PX4 and its build requirements
+        run: |
+          git clone --depth 1 --branch "$PX4_REF" https://github.com/PX4/PX4-Autopilot.git "$RUNNER_TEMP/px4"
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install -r "$RUNNER_TEMP/px4/Tools/setup/requirements.txt"
+          command -v ninja || brew install ninja
+      - name: Build the engine
+        run: PX4_CA_PYTHON="$RUNNER_TEMP/venv/bin/python" engine/build.sh "$RUNNER_TEMP/px4"
+      - name: Tests with the engine and golden tests
+        env:
+          PX4_CA_ENGINE: build/engine/px4_ca_engine
+        run: PX4_CA_PX4_DIR="$RUNNER_TEMP/px4" python -m unittest discover -s tests -t .
+      - name: Package the engine
+        run: engine/package.sh build/engine/px4_ca_engine macos-arm64 dist
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: px4_ca_engine-macos-arm64
+          path: dist/
+          if-no-files-found: error

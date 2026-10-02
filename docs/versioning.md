@@ -66,15 +66,31 @@ requirements.
 | Ninja | 1.13.2 | from the container |
 | Python | 3.14.8 | 3.12.3 |
 
-Linux x86_64 has not been built yet; the CI workflow does that.
+Linux x86_64 is built and tested by the CI workflow.
 
 Python for PX4's build scripts: the `.venv` of a PX4 checkout, or the one named
 by `PX4_CA_PYTHON`.
 
-PX4's `px4_sitl_test` configuration downloads abseil and fuzztest into the
-build directory during configuration. The build scripts skip the Gazebo lookup
-(and, for SITL, Protobuf), because the tool does not need them and PX4 v1.17.0
-does not build against every installed Gazebo and Protobuf version.
+The engine is built with PX4's `px4_sitl_default` configuration and only the
+`px4_ca_engine` target is built. The build scripts skip the Gazebo and Protobuf
+lookups, because the tool does not need them and PX4 v1.17.0 does not build
+against every installed Gazebo and Protobuf version.
+
+## Prebuilt engines
+
+`engine/package.sh` puts a built engine into an archive named
+`px4_ca_engine-px4-<PX4 version>-schema<engine_schema>-<platform>.tar.gz` with a
+SHA-256 checksum. The CI workflow builds these for every push:
+
+| Platform | Built on | Needs |
+|---|---|---|
+| `linux-x86_64` | Ubuntu 24.04 (PX4's `px4-dev` container), GCC | glibc 2.38 or newer (Ubuntu 24.04; not Ubuntu 22.04 or Debian 12); the C++ runtime is linked statically |
+| `linux-arm64` | the same, on an arm64 runner | the same |
+| `macos-arm64` | macOS 26 runner, Apple clang | macOS 14 or newer (`PX4_CA_MACOS_TARGET` when building) |
+
+The script prints the exact glibc symbol version and the macOS minimum version
+of each build. A package is refused when the PX4 tree it was built from had
+local changes.
 
 ## Continuous integration
 
@@ -86,4 +102,6 @@ does not build against every installed Gazebo and Protobuf version.
 | `actions/checkout` | v7.0.1, pinned by commit |
 | `actions/setup-python` | v7.0.0, pinned by commit |
 | Python job | 3.11, 3.12, 3.13, 3.14 |
-| Engine job container | `px4io/px4-dev:v1.17.0` |
+| `actions/upload-artifact` | v7.0.1, pinned by commit |
+| Linux engine jobs | `ubuntu-24.04` and `ubuntu-24.04-arm`, container `px4io/px4-dev:v1.17.0` |
+| macOS engine job | `macos-26`, Python 3.13 for PX4's build scripts |

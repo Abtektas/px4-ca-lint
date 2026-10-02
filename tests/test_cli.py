@@ -82,6 +82,28 @@ class WithEngine(unittest.TestCase):
         self.assertEqual(run("--engine", ENGINE, "examples/no_rotors.params")[0], 1)
         self.assertEqual(run("--engine", ENGINE, "--fail-on", "never", "examples/no_rotors.params")[0], 0)
 
+    def test_diff(self):
+        before, after = "examples/standard_vtol.params", "examples/standard_vtol_pusher_offset.params"
+        code, stdout, _ = run("diff", "--engine", ENGINE, "--format", "json", before, after)
+        self.assertEqual(code, 0)
+        diff = json.loads(stdout)
+        self.assertEqual(diff["parameters"], [{"name": "CA_ROTOR4_PZ", "before": None, "after": "-0.05"}])
+        self.assertEqual(sorted(item["rule"] for item in diff["findings"]["new"]), ["CA010", "CA011"])
+        self.assertEqual(len(diff["matrices"]), 6)
+
+    def test_diff_exit_codes(self):
+        before, after = "examples/standard_vtol.params", "examples/standard_vtol_pusher_offset.params"
+        # only findings that are new in the second file count
+        self.assertEqual(run("diff", "--engine", ENGINE, "--fail-on", "warning", before, after)[0], 1)
+        self.assertEqual(run("diff", "--engine", ENGINE, "--fail-on", "warning", after, before)[0], 0)
+        self.assertEqual(run("diff", "--engine", ENGINE, "--fail-on", "warning", after, after)[0], 0)
+        self.assertEqual(run("diff", "--engine", ENGINE, before, "does/not/exist")[0], 2)
+
+    def test_markdown_report(self):
+        code, stdout, _ = run("--engine", ENGINE, "--format", "markdown", "examples/quad_wrong_spin.params")
+        self.assertEqual(code, 0)
+        self.assertIn("**warning CA020**", stdout)
+
     def test_unsupported_airframe(self):
         path = Path(os.environ.get("TMPDIR", "/tmp")) / "px4-ca-lint-test-unsupported.params"
         path.write_text("CA_AIRFRAME 3\n")

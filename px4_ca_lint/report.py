@@ -78,6 +78,7 @@ def build_report(param_file: ParamFile, engine_result: dict, checked: Result) ->
             "path": param_file.path,
             "format": param_file.format,
             "num_parameters": len(param_file.params),
+            "parameters": dict(param_file.params),
         },
         "px4": {
             "version": engine_result["px4_version"],
@@ -191,3 +192,75 @@ def render_text(report: dict) -> str:
         report["disclaimer"],
     ]
     return "\n".join(lines) + "\n"
+
+
+def _markdown_table(corner: str, columns: list[str], rows: list[tuple[str, list[float | None]]]) -> list[str]:
+    lines = [
+        "| " + " | ".join([corner, *columns]) + " |",
+        "|---|" + "---:|" * len(columns),
+    ]
+    lines += ["| " + " | ".join([name, *(_number(value) for value in values)]) + " |" for name, values in rows]
+    return lines
+
+
+def render_markdown(report: dict) -> str:
+    """The report as GitHub-flavoured Markdown, for pasting into an issue or pull request."""
+    source = report["input"]
+    px4 = report["px4"]
+    airframe = report["airframe"]
+    summary = report["summary"]
+    lines = [
+        f"### px4-ca-lint report: {summary['errors']} error(s), {summary['warnings']} warning(s)",
+        "",
+        f"- Input: `{source['path']}` ({source['format']} format, {source['num_parameters']} parameters)",
+        f"- PX4: `{px4['version']}` (`{px4['commit'][:10]}`)",
+        f"- Airframe: `CA_AIRFRAME` {airframe['ca_airframe']} ({airframe['name']}), "
+        f"{airframe['num_motors']} motors, {airframe['num_servos']} servos",
+        f"- Tool: px4-ca-lint {report['tool_version']}",
+        "",
+        "#### Findings",
+        "",
+    ]
+
+    for finding in report["findings"]:
+        where = "" if finding["matrix"] is None else f" (matrix {finding['matrix']})"
+        lines.append(f"- **{finding['level']} {finding['rule']}**{where}: {finding['message']}")
+
+    for rule, reason in report["rules_not_checked"].items():
+        lines.append(f"- {rule} was not checked: {reason}")
+
+    if not report["findings"] and not report["rules_not_checked"]:
+        lines.append("None.")
+
+    if report["notes"]:
+        lines += ["", "#### Notes", ""]
+        lines += [f"- {note}" for note in report["notes"]]
+
+    for matrix in report["matrices"]:
+        actuators = matrix["actuators"]
+
+        if not actuators:
+            continue
+
+        normalised = ", roll/pitch/yaw normalised" if matrix["normalize_rpy"] else ""
+        lines += [
+            "",
+            f"<details><summary>Matrix {matrix['index']} ({matrix['method']}{normalised})</summary>",
+            "",
+            "Effectiveness: what each actuator produces on each axis",
+            "",
+        ]
+        lines += _markdown_table("axis", actuators, [(axis, matrix["effectiveness"][axis]) for axis in AXES])
+        lines += ["", "Mix: actuator command per unit of setpoint on each axis", ""]
+        lines += _markdown_table(
+            "actuator",
+            list(AXES),
+            [(name, [row[axis] for axis in AXES]) for name, row in zip(actuators, matrix["mix"])],
+        )
+        lines += ["", "</details>"]
+
+    lines += ["", f"_{report['disclaimer']}_"]
+    return "\n".join(lines) + "\n"
+
+
+RENDERERS = {"text": render_text, "json": render_json, "markdown": render_markdown}

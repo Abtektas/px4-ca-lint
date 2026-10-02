@@ -37,19 +37,35 @@ result is only valid for that PX4 version.
 
 ## Usage
 
-Build the engine once. This needs a PX4 checkout that can build
-`px4_sitl_test`:
+Build the engine once. This needs a PX4 checkout and the tools PX4 needs to
+build `px4_sitl_default`:
 
 ```
 engine/build.sh <path to PX4-Autopilot>
 ```
+
+The CI workflow of this repository builds the engine for Linux x86_64, Linux
+arm64 and macOS arm64 against PX4 v1.17.0. Until the first release these
+builds are only available as workflow artifacts.
 
 Then run the tool on a parameter file (Python 3.11 or newer, no dependencies):
 
 ```
 python3 -m px4_ca_lint examples/standard_vtol_pusher_offset.params
 python3 -m px4_ca_lint --format json examples/standard_vtol_pusher_offset.params
+python3 -m px4_ca_lint --format markdown examples/standard_vtol_pusher_offset.params
 ```
+
+The Markdown report is meant for pasting into an issue or pull request.
+
+To see what a parameter change does, compare two files:
+
+```
+python3 -m px4_ca_lint diff examples/standard_vtol.params examples/standard_vtol_pusher_offset.params
+```
+
+This lists the parameters that differ, the matrix values that changed, and the
+findings that are new or gone in the second file.
 
 The engine is looked up in `--engine PATH`, then `$PX4_CA_ENGINE`, then
 `build/engine/px4_ca_engine`.
@@ -88,7 +104,7 @@ default is `error`).
 | Exit code | Meaning |
 |---|---|
 | 0 | report produced, nothing at or above the `--fail-on` level |
-| 1 | report produced, findings at or above the `--fail-on` level |
+| 1 | report produced, findings at or above the `--fail-on` level; for `diff`, only findings that are new in the second file count |
 | 2 | no report: bad arguments, unreadable file, engine missing or failed, unsupported airframe |
 
 ## How the tool itself is checked

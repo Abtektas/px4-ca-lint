@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <platforms/posix/apps.h>
 #include <px4_platform_common/param.h>
 #include <uORB/Subscription.hpp>
 
@@ -31,6 +32,11 @@ static constexpr int EXIT_USAGE = 64;
 static constexpr int EXIT_INPUT = 65;
 static constexpr int EXIT_UNSUPPORTED = 66;
 static constexpr int EXIT_PX4_FAILED = 67;
+
+// PX4's daemon library expects the program to provide the list of built-in
+// commands. The engine has none.
+void init_app_map(apps_map_type &) {}
+void list_builtins(apps_map_type &) {}
 
 using Matrix6N = matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS>;
 using MatrixN6 = matrix::Matrix<float, ControlAllocation::NUM_ACTUATORS, ControlAllocation::NUM_AXES>;

@@ -3,7 +3,7 @@ import unittest
 
 from px4_ca_lint import DISCLAIMER
 from px4_ca_lint.params import ParamFile
-from px4_ca_lint.report import render_json, render_text
+from px4_ca_lint.report import render_json, render_markdown, render_text
 from px4_ca_lint.report import build_report as _build_report
 from px4_ca_lint.rules import check
 
@@ -105,6 +105,21 @@ class Report(unittest.TestCase):
         self.assertIn("motor0", text)
         self.assertNotIn("-0.000", text)
         self.assertTrue(text.rstrip().endswith(DISCLAIMER))
+
+    def test_markdown(self):
+        text = render_markdown(build_report(param_file(), engine_result(weak_axes_zeroed=["yaw"])))
+        self.assertIn("### px4-ca-lint report: 0 error(s), 1 warning(s)", text)
+        self.assertIn("- **warning CA004** (matrix 0):", text)
+        self.assertIn("| axis | motor0 | servo0 |", text)
+        self.assertIn("| roll | 1.500 | -0.500 |", text)
+        self.assertIn(f"_{DISCLAIMER}_", text)
+
+    def test_markdown_without_findings(self):
+        self.assertIn("None.", render_markdown(build_report(param_file(), engine_result())))
+
+    def test_json_lists_the_given_parameters(self):
+        report = build_report(param_file(), engine_result())
+        self.assertEqual(report["input"]["parameters"], {"CA_AIRFRAME": "0", "CA_ROTOR_COUNT": "1"})
 
 
 if __name__ == "__main__":

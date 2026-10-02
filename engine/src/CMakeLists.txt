@@ -1,18 +1,17 @@
 # px4-ca-lint engine.
 #
-# Built as a PX4 "external modules" directory, so the PX4 tree is not modified:
-#   cmake -S <PX4> -B <build> -G Ninja -DCONFIG=px4_sitl_test \
+# Built as a PX4 "external modules" directory, so no file tracked by PX4 is
+# modified:
+#   cmake -S <PX4> -B <build> -G Ninja -DCONFIG=px4_sitl_default \
 #         -DEXTERNAL_MODULES_LOCATION=<this repo>/engine
 #   ninja -C <build> px4_ca_engine
 #
-# The px4_sitl_test config is used because it provides the `test_stubs` library,
-# which lets a small host executable link the PX4 platform layer without the
-# full module list.
+# Only the px4_ca_engine target is built, not the PX4 firmware itself.
 
-# PX4 adds external modules before the platform layer, so `test_stubs` is not
-# defined yet at this point. BUILD_TESTING is what makes PX4 define it later.
-if(NOT BUILD_TESTING)
-	message(FATAL_ERROR "px4_ca_engine needs the px4_sitl_test config (-DCONFIG=px4_sitl_test)")
+if(BUILD_TESTING)
+	# PX4's test configuration enables sanitizers and defines the same app-map
+	# functions as main.cpp.
+	message(FATAL_ERROR "px4_ca_engine is built with -DCONFIG=px4_sitl_default, not with a test configuration")
 endif()
 
 execute_process(
@@ -62,11 +61,9 @@ set(_engine_libs
 	uorb_msgs
 )
 
-# whole-archive so the daemon app-map stubs are linked
-if(APPLE)
-	list(APPEND _engine_libs test_stubs "-Wl,-force_load,$<TARGET_FILE:test_stubs>")
-else()
-	list(APPEND _engine_libs -Wl,--whole-archive test_stubs -Wl,--no-whole-archive)
-endif()
-
 target_link_libraries(px4_ca_engine PRIVATE ${_engine_libs})
+
+# Fewer runtime dependencies for a binary that is copied to other machines.
+if(NOT APPLE)
+	target_link_options(px4_ca_engine PRIVATE -static-libstdc++ -static-libgcc)
+endif()
