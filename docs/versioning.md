@@ -30,8 +30,8 @@ version.
 
 | PX4 | Commit | Status | Checked on |
 |---|---|---|---|
-| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | builds, tests pass; target of the first release | 2026-10-02 |
-| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, tests pass | 2026-10-02 |
+| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | target of the first release; all tests pass, including golden tests and SITL cross-check, on macOS arm64 and Linux arm64 | 2026-10-02 |
+| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, unit and end-to-end tests pass; no golden reports, no cross-check | 2026-10-02 |
 
 Both builds give identical matrices for the files in `examples/`.
 
@@ -49,23 +49,41 @@ The tool needs Python 3.11 or newer and has no runtime dependencies. Python
 
 | Thing | Version | Notes |
 |---|---|---|
-| Python | 3.14.8 | the only version tested so far; 3.11 to 3.13 will be covered by CI |
+| Python | 3.14.8 and 3.12.3 | tested locally; CI covers 3.11 to 3.14 |
 | hatchling (build backend) | `>=1.32` (1.32.4 was the latest on 2026-10-02) | only needed to install or package |
 | Tests | standard library `unittest` | no test dependency |
 
-## Build tools used so far
+## Build environments checked
 
-These are the versions the engine was built with, not minimum requirements.
+These are the versions the engine was built and tested with, not minimum
+requirements.
 
-| Tool | Version |
-|---|---|
-| macOS (arm64) | Darwin 27.0.0 |
-| Apple clang | 21.0.0 |
-| CMake | 4.4.3 |
-| Ninja | 1.13.2 |
-| uv | 0.12.22 |
-| Python for PX4's build scripts | the `.venv` of a PX4 checkout (`PX4_CA_PYTHON`) |
+| | macOS | Linux |
+|---|---|---|
+| System | Darwin 27.0.0, arm64 | Ubuntu 24.04 in PX4's `px4-dev` container (`v1.17.0-rc2` image), arm64 |
+| Compiler | Apple clang 21.0.0 | GCC 13.3.0 |
+| CMake | 4.4.3 | 3.28.3 |
+| Ninja | 1.13.2 | from the container |
+| Python | 3.14.8 | 3.12.3 |
+
+Linux x86_64 has not been built yet; the CI workflow does that.
+
+Python for PX4's build scripts: the `.venv` of a PX4 checkout, or the one named
+by `PX4_CA_PYTHON`.
 
 PX4's `px4_sitl_test` configuration downloads abseil and fuzztest into the
-build directory during configuration. The engine build skips the Gazebo lookup,
-because it does not need Gazebo.
+build directory during configuration. The build scripts skip the Gazebo lookup
+(and, for SITL, Protobuf), because the tool does not need them and PX4 v1.17.0
+does not build against every installed Gazebo and Protobuf version.
+
+## Continuous integration
+
+`.github/workflows/tests.yml`, versions checked on 2026-10-02:
+
+| Thing | Version |
+|---|---|
+| Runner | `ubuntu-24.04` |
+| `actions/checkout` | v7 |
+| `actions/setup-python` | v7 |
+| Python job | 3.11, 3.12, 3.13, 3.14 |
+| Engine job container | `px4io/px4-dev:v1.17.0` |

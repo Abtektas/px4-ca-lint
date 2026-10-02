@@ -1,0 +1,187 @@
+{
+ "status": "checked",
+ "airframe": {
+  "ca_airframe": 0,
+  "name": "Multirotor",
+  "num_motors": 8,
+  "num_servos": 0
+ },
+ "findings": [],
+ "matrices": [
+  {
+   "index": 0,
+   "method": "sequential_desaturation",
+   "normalize_rpy": true,
+   "actuators": [
+    "motor0",
+    "motor1",
+    "motor2",
+    "motor3",
+    "motor4",
+    "motor5",
+    "motor6",
+    "motor7"
+   ],
+   "axes": [
+    {
+     "axis": "roll",
+     "status": "controlled",
+     "authority": 16.9
+    },
+    {
+     "axis": "pitch",
+     "status": "controlled",
+     "authority": 16.9
+    },
+    {
+     "axis": "yaw",
+     "status": "controlled",
+     "authority": 2.6
+    },
+    {
+     "axis": "thrust_x",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_y",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_z",
+     "status": "controlled",
+     "authority": 52.0
+    }
+   ],
+   "effectiveness": {
+    "roll": [
+     -1.235,
+     1.235,
+     -2.99,
+     -1.235,
+     1.235,
+     2.99,
+     2.99,
+     -2.99
+    ],
+    "pitch": [
+     2.99,
+     -2.99,
+     1.235,
+     -2.99,
+     2.99,
+     -1.235,
+     1.235,
+     -1.235
+    ],
+    "yaw": [
+     -0.325,
+     -0.325,
+     0.325,
+     0.325,
+     0.325,
+     0.325,
+     -0.325,
+     -0.325
+    ],
+    "thrust_x": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "thrust_y": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "thrust_z": [
+     -6.5,
+     -6.5,
+     -6.5,
+     -6.5,
+     -6.5,
+     -6.5,
+     -6.5,
+     -6.5
+    ]
+   },
+   "mix": [
+    {
+     "roll": -0.3818,
+     "pitch": 0.9243,
+     "yaw": -1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": 0.3818,
+     "pitch": -0.9243,
+     "yaw": -1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": -0.9243,
+     "pitch": 0.3818,
+     "yaw": 1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": -0.3818,
+     "pitch": -0.9243,
+     "yaw": 1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": 0.3818,
+     "pitch": 0.9243,
+     "yaw": 1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": 0.9243,
+     "pitch": -0.3818,
+     "yaw": 1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": 0.9243,
+     "pitch": 0.3818,
+     "yaw": -1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    },
+    {
+     "roll": -0.9243,
+     "pitch": -0.3818,
+     "yaw": -1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1
+    }
+   ]
+  }
+ ]
+}

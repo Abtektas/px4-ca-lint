@@ -1,0 +1,60 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # the PX4 release the engine is built against, see docs/versioning.md
+  PX4_REF: v1.17.0
+
+jobs:
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      # tests that need the engine are skipped in this job
+      - run: python -m unittest discover -s tests -t .
+      - name: Install and run the command
+        run: |
+          python -m pip install .
+          px4-ca-lint --version
+
+  engine:
+    name: Engine, golden tests and SITL cross-check
+    runs-on: ubuntu-24.04
+    container: px4io/px4-dev:v1.17.0
+    steps:
+      - uses: actions/checkout@v7
+      - name: Get PX4
+        run: |
+          git config --global --add safe.directory '*'
+          git clone --depth 1 --branch "$PX4_REF" https://github.com/PX4/PX4-Autopilot.git "$RUNNER_TEMP/px4"
+      - name: Build the engine
+        run: engine/build.sh "$RUNNER_TEMP/px4"
+      - name: Tests with the engine and golden tests
+        env:
+          PX4_CA_ENGINE: build/engine/px4_ca_engine
+        run: PX4_CA_PX4_DIR="$RUNNER_TEMP/px4" python3 -m unittest discover -s tests -t .
+      - name: Build PX4 SITL
+        run: engine/build_sitl.sh "$RUNNER_TEMP/px4"
+      - name: SITL cross-check
+        env:
+          PX4_CA_ENGINE: build/engine/px4_ca_engine
+          PX4_CA_SITL_BUILD: build/sitl
+        run: python3 -m unittest -v tests.test_sitl

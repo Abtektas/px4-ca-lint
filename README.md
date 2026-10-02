@@ -27,8 +27,10 @@ the rules can still change.
 
 The engine is a small program that is compiled against a PX4 source tree. It
 uses PX4's parameter system and the same classes the `control_allocator` module
-uses, so the matrices are the ones that PX4 version computes. The PX4 tree is
-not modified; the engine is built through PX4's external modules mechanism.
+uses, so the matrices are the ones that PX4 version computes. The engine is
+built through PX4's external modules mechanism, into a build directory outside
+the PX4 tree. No file tracked by PX4 is changed; PX4's own build writes a few
+generated files into its tree, which PX4's `.gitignore` covers.
 
 The output names the PX4 version and commit the engine was built against. A
 result is only valid for that PX4 version.
@@ -89,7 +91,24 @@ default is `error`).
 | 1 | report produced, findings at or above the `--fail-on` level |
 | 2 | no report: bad arguments, unreadable file, engine missing or failed, unsupported airframe |
 
-Tests: `python3 -m unittest discover -s tests -t .`
+## How the tool itself is checked
+
+| Check | What it shows | Needs |
+|---|---|---|
+| Unit tests | parsers, rules and reports behave as documented | Python only |
+| End-to-end tests | the examples give the expected findings | the engine |
+| Golden tests | the reports for all airframe scripts shipped with PX4 v1.17.0 have not changed | the engine and a PX4 checkout |
+| SITL cross-check | the engine's effectiveness matrices equal the ones of a running PX4 (`control_allocator status`) | the engine and a PX4 SITL build |
+
+```
+python3 -m unittest discover -s tests -t .
+```
+
+Tests whose requirements are missing are skipped. See the comments at the top
+of `tests/test_golden.py` and `tests/test_sitl.py` for the environment
+variables. `control_allocator status` does not print the mix matrix, so the
+cross-check compares the effectiveness matrices only; the mix matrix comes from
+the same PX4 class in both cases.
 
 ## Example
 

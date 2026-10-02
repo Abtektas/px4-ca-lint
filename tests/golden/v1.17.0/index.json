@@ -1,0 +1,513 @@
+{
+ "init.d/1001_rc_quad_x.hil": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/1002_standard_vtol.hil": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/11001_hexa_cox": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/1100_rc_quad_x_sih.hil": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/1101_rc_plane_sih.hil": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/1102_tailsitter_duo_sih.hil": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d/1103_standard_vtol_sih.hil": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/1104_standard_ackermann_sih.hil": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d/12001_octo_cox": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/13000_generic_vtol_standard": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/13030_generic_vtol_quad_tiltrotor": {
+  "status": "unsupported",
+  "ca_airframe": 3
+ },
+ "init.d/13100_generic_vtol_tiltrotor": {
+  "status": "unsupported",
+  "ca_airframe": 3
+ },
+ "init.d/13200_generic_vtol_tailsitter": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d/14001_generic_mc_with_tilt": {
+  "status": "unsupported",
+  "ca_airframe": 8
+ },
+ "init.d/16001_helicopter": {
+  "status": "unsupported",
+  "ca_airframe": 10
+ },
+ "init.d/17002_TF-AutoG2": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/17003_TF-G2": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/18001_TF-B1": {
+  "status": "no CA parameters"
+ },
+ "init.d/2100_standard_plane": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/2106_albatross": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/24001_dodeca_cox": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/2507_cloudship": {
+  "status": "unsupported",
+  "ca_airframe": 9
+ },
+ "init.d/3000_generic_wing": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d/4001_quad_x": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4014_s500": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4015_holybro_s500": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4016_holybro_px4vision": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4017_nxp_hovergames": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4019_x500_v2": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4020_holybro_px4vision_v1_5": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4041_beta75x": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4050_generic_250": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4052_holybro_qav250": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4053_holybro_kopis2": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4061_atl_mantis_edu": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4071_ifo": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4073_ifo-s": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4500_clover4": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4601_droneblocks_dexi_5": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/4901_crazyflie21": {
+  "status": "checked",
+  "findings": [
+   "CA001"
+  ]
+ },
+ "init.d/50000_generic_rover_differential": {
+  "status": "no parameters"
+ },
+ "init.d/50001_aion_robotics_r1_rover": {
+  "status": "unsupported",
+  "ca_airframe": 6
+ },
+ "init.d/5001_quad_+": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/51000_generic_rover_ackermann": {
+  "status": "no parameters"
+ },
+ "init.d/51001_axial_scx10_2_trail_honcho": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d/51002_nxp_b3rb": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d/52000_generic_rover_mecanum": {
+  "status": "no parameters"
+ },
+ "init.d/60000_uuv_generic": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d/60001_uuv_hippocampus": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d/60002_uuv_bluerov2_heavy": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d/6001_hexa_x": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/6002_draco_r": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/70000_atmos": {
+  "status": "unsupported",
+  "ca_airframe": 14
+ },
+ "init.d/7001_hexa_+": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/8001_octo_x": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d/9001_octo_+": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10015_gazebo-classic_iris": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10016_none_iris": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10017_jmavsim_iris": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10018_gazebo-classic_iris_foggy_lidar": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10019_gazebo-classic_omnicopter": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10030_gazebo-classic_px4vision": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10040_sihsim_quadx": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10041_sihsim_airplane": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/10042_sihsim_xvert": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d-posix/10043_sihsim_standard_vtol": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10044_sihsim_hex": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/10045_sihsim_rover_ackermann": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d-posix/1010_gazebo-classic_iris_opt_flow": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1010_gazebo-classic_iris_opt_flow.post": {
+  "status": "no parameters"
+ },
+ "init.d-posix/1011_gazebo-classic_iris_irlock": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1012_gazebo-classic_iris_rplidar": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1013_gazebo-classic_iris_vision": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1013_gazebo-classic_iris_vision.post": {
+  "status": "no parameters"
+ },
+ "init.d-posix/1015_gazebo-classic_iris_depth_camera": {
+  "status": "no parameters"
+ },
+ "init.d-posix/1016_gazebo-classic_iris_downward_depth_camera": {
+  "status": "no parameters"
+ },
+ "init.d-posix/1017_gazebo-classic_iris_opt_flow_mockup": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1019_gazebo-classic_iris_dual_gps": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1021_gazebo-classic_uuv_hippocampus": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d-posix/1022_gazebo-classic_uuv_bluerov2_heavy": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d-posix/1030_gazebo-classic_plane": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1031_gazebo-classic_plane_cam": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1031_gazebo-classic_plane_cam.post": {
+  "status": "no parameters"
+ },
+ "init.d-posix/1032_gazebo-classic_plane_catapult": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1033_jsbsim_rascal": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1034_flightgear_rascal-electric": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1035_gazebo-classic_techpod": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1036_jsbsim_malolo": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1037_gazebo-classic_believer": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1038_gazebo-classic_glider": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1039_flightgear_rascal": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1039_gazebo-classic_advanced_plane": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1040_gazebo-classic_standard_vtol": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1041_gazebo-classic_tailsitter": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d-posix/1042_gazebo-classic_tiltrotor": {
+  "status": "unsupported",
+  "ca_airframe": 3
+ },
+ "init.d-posix/1043_gazebo-classic_standard_vtol_drop": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/1044_gazebo-classic_plane_lidar": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/1045_gazebo-classic_quadtailsitter": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d-posix/1062_flightgear_tf-r1": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d-posix/1070_gazebo-classic_boat": {
+  "status": "unsupported",
+  "ca_airframe": 9
+ },
+ "init.d-posix/17001_flightgear_tf-g1": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/17002_flightgear_tf-g2": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/2507_gazebo-classic_cloudship": {
+  "status": "unsupported",
+  "ca_airframe": 9
+ },
+ "init.d-posix/3010_jsbsim_quadrotor_x": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/3011_jsbsim_hexarotor_x": {
+  "status": "checked",
+  "findings": [
+   "CA001"
+  ]
+ },
+ "init.d-posix/4001_gz_x500": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/4002_gz_x500_depth": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4003_gz_rc_cessna": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/4004_gz_standard_vtol": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/4005_gz_x500_vision": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4006_gz_px4vision": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/4008_gz_advanced_plane": {
+  "status": "unsupported",
+  "ca_airframe": 1
+ },
+ "init.d-posix/4009_gz_r1_rover": {
+  "status": "unsupported",
+  "ca_airframe": 6
+ },
+ "init.d-posix/4010_gz_x500_mono_cam": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4011_gz_lawnmower": {
+  "status": "unsupported",
+  "ca_airframe": 6
+ },
+ "init.d-posix/4013_gz_x500_lidar_2d": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4014_gz_x500_mono_cam_down": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4016_gz_x500_lidar_down": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4017_gz_x500_lidar_front": {
+  "status": "no parameters"
+ },
+ "init.d-posix/4018_gz_quadtailsitter": {
+  "status": "unsupported",
+  "ca_airframe": 4
+ },
+ "init.d-posix/4019_gz_x500_gimbal": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/4020_gz_tiltrotor": {
+  "status": "unsupported",
+  "ca_airframe": 3
+ },
+ "init.d-posix/4021_gz_x500_flow": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/50000_gz_rover_differential": {
+  "status": "unsupported",
+  "ca_airframe": 6
+ },
+ "init.d-posix/51000_gz_rover_ackermann": {
+  "status": "unsupported",
+  "ca_airframe": 5
+ },
+ "init.d-posix/52000_gz_rover_mecanum": {
+  "status": "unsupported",
+  "ca_airframe": 13
+ },
+ "init.d-posix/60002_gz_uuv_bluerov2_heavy": {
+  "status": "unsupported",
+  "ca_airframe": 7
+ },
+ "init.d-posix/6011_gazebo-classic_typhoon_h480": {
+  "status": "checked",
+  "findings": []
+ },
+ "init.d-posix/6011_gazebo-classic_typhoon_h480.post": {
+  "status": "no parameters"
+ },
+ "init.d-posix/70000_gz_atmos": {
+  "status": "unsupported",
+  "ca_airframe": 14
+ },
+ "init.d-posix/8011_gz_omnicopter": {
+  "status": "checked",
+  "findings": []
+ }
+}

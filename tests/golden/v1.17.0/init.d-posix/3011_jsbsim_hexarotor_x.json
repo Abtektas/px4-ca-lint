@@ -1,0 +1,66 @@
+{
+ "status": "checked",
+ "airframe": {
+  "ca_airframe": 0,
+  "name": "Multirotor",
+  "num_motors": 0,
+  "num_servos": 0
+ },
+ "findings": [
+  {
+   "rule": "CA001",
+   "matrix": null,
+   "axis": null,
+   "actuators": []
+  }
+ ],
+ "matrices": [
+  {
+   "index": 0,
+   "method": "sequential_desaturation",
+   "normalize_rpy": true,
+   "actuators": [],
+   "axes": [
+    {
+     "axis": "roll",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "pitch",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "yaw",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_x",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_y",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_z",
+     "status": "not controlled",
+     "authority": 0
+    }
+   ],
+   "effectiveness": {
+    "roll": [],
+    "pitch": [],
+    "yaw": [],
+    "thrust_x": [],
+    "thrust_y": [],
+    "thrust_z": []
+   },
+   "mix": []
+  }
+ ]
+}
