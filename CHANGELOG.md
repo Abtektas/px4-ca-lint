@@ -5,6 +5,15 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ## Unreleased
 
+### Changed
+
+- The install instructions use a virtual environment.
+
+### Added
+
+- `install check` workflow: follows the install steps with the files of a
+  published release on clean machines.
+
 ## 0.1.0 - 2026-10-02
 
 First release. Prebuilt engines contain the control allocation code of PX4

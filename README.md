@@ -62,11 +62,16 @@ findings.
 You need Python 3.11 or newer and the engine for your platform. The tool has no
 Python dependencies. The commands below install release 0.1.0.
 
-1. The Python package:
+1. The Python package, into a virtual environment (most Linux distributions
+   do not allow `pip install` outside of one):
 
    ```
-   python3 -m pip install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.1.0/px4_ca_lint-0.1.0-py3-none-any.whl
+   python3 -m venv ~/.venvs/px4-ca-lint
+   ~/.venvs/px4-ca-lint/bin/pip install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.1.0/px4_ca_lint-0.1.0-py3-none-any.whl
+   export PATH="$HOME/.venvs/px4-ca-lint/bin:$PATH"
    ```
+
+   With [pipx](https://pipx.pypa.io/) it is one command: `pipx install <the same URL>`.
 
 2. The engine. Choose `linux-x86_64`, `linux-arm64` or `macos-arm64`:
 
@@ -196,6 +201,9 @@ of `tests/test_golden.py` and `tests/test_sitl.py` for the environment
 variables. `control_allocator status` does not print the mix matrix, so the
 cross-check compares the effectiveness matrices only; the mix matrix comes from
 the same PX4 class in both cases.
+
+After every release, the `install check` workflow follows the install steps
+above on clean Linux x86_64, Linux arm64 and macOS arm64 machines.
 
 [docs/px4-airframes.md](docs/px4-airframes.md) lists the results for PX4's own
 airframe scripts.

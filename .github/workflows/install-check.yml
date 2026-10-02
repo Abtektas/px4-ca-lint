@@ -1,0 +1,83 @@
+name: install check
+
+# Follows the install steps of the README with the files of a published
+# release, on clean runners, and runs the tool on an example.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release to check, without the leading v
+        required: true
+        default: "0.1.0"
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.platform }} on ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux-x86_64
+            runner: ubuntu-24.04
+          - platform: linux-arm64
+            runner: ubuntu-24.04-arm
+          - platform: macos-arm64
+            runner: macos-26
+    env:
+      VERSION: ${{ inputs.version || github.event.release.tag_name }}
+      PLATFORM: ${{ matrix.platform }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Version without the leading v
+        run: echo "VERSION=${VERSION#v}" >> "$GITHUB_ENV"
+      # only the examples are taken from the repository
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: v${{ env.VERSION }}
+          sparse-checkout: examples
+      - name: Install the Python package
+        run: |
+          python3 --version
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install "https://github.com/Abtektas/px4-ca-lint/releases/download/v${VERSION}/px4_ca_lint-${VERSION}-py3-none-any.whl"
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: Install the engine
+        working-directory: ${{ runner.temp }}
+        run: |
+          BASE="https://github.com/Abtektas/px4-ca-lint/releases/download/v${VERSION}"
+          curl -fLO "$BASE/SHA256SUMS"
+          NAME="$(grep -o "px4_ca_engine-.*-${PLATFORM}" SHA256SUMS)"
+          curl -fLO "$BASE/$NAME.tar.gz"
+          shasum -a 256 --ignore-missing -c SHA256SUMS
+          gh attestation verify "$NAME.tar.gz" -R Abtektas/px4-ca-lint
+          tar -xzf "$NAME.tar.gz"
+          mkdir -p ~/.local/share/px4-ca-lint
+          cp "$NAME/px4_ca_engine" ~/.local/share/px4-ca-lint/
+      - name: Run the tool
+        run: |
+          px4-ca-lint --version
+          px4-ca-lint examples/standard_vtol.params
+          px4-ca-lint examples/standard_vtol_pusher_offset.params
+      - name: Check the result
+        run: |
+          px4-ca-lint --format json examples/standard_vtol_pusher_offset.params > report.json
+          python3 - <<'EOF'
+          import json
+          report = json.load(open("report.json"))
+          rules = sorted(finding["rule"] for finding in report["findings"])
+          gain = report["matrices"][0]["mix"][4]["thrust_x"]
+          print(report["px4"]["version"], rules, gain)
+          assert rules == ["CA010", "CA011"], rules
+          assert abs(gain - 4.0) < 1e-3, gain
+          EOF
+          status=0
+          px4-ca-lint --fail-on warning examples/standard_vtol_pusher_offset.params > /dev/null || status=$?
+          test "$status" -eq 1
+          px4-ca-lint diff examples/standard_vtol.params examples/standard_vtol_pusher_offset.params

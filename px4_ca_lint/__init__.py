@@ -1,6 +1,6 @@
 """Offline review aid for PX4 control allocation parameters."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0.dev0"
 
 DISCLAIMER = (
     "This report is a review aid, not an airworthiness approval. No findings does not mean "
