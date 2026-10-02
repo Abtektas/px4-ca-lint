@@ -83,7 +83,7 @@ does not build against every installed Gazebo and Protobuf version.
 | Thing | Version |
 |---|---|
 | Runner | `ubuntu-24.04` |
-| `actions/checkout` | v7 |
-| `actions/setup-python` | v7 |
+| `actions/checkout` | v7.0.1, pinned by commit |
+| `actions/setup-python` | v7.0.0, pinned by commit |
 | Python job | 3.11, 3.12, 3.13, 3.14 |
 | Engine job container | `px4io/px4-dev:v1.17.0` |
