@@ -102,7 +102,7 @@ class WithEngine(unittest.TestCase):
     def test_markdown_report(self):
         code, stdout, _ = run("--engine", ENGINE, "--format", "markdown", "examples/quad_wrong_spin.params")
         self.assertEqual(code, 0)
-        self.assertIn("**warning CA020**", stdout)
+        self.assertIn("**warning [CA020](", stdout)
 
     def test_unsupported_airframe(self):
         path = Path(os.environ.get("TMPDIR", "/tmp")) / "px4-ca-lint-test-unsupported.params"

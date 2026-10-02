@@ -5,8 +5,16 @@ Three things have a version, and they change independently.
 ## 1. The tool
 
 Semantic versioning, `MAJOR.MINOR.PATCH`. Before 1.0.0 a minor release may
-change the output or the rules. No version has been released yet; the first
-will be `0.1.0`.
+change the output or the rules. Between releases the version on `main` ends in
+`.dev0`.
+
+A release is made by a tag `vX.Y.Z`. The release workflow runs every test,
+builds the engines and creates a draft GitHub Release, which is published by
+hand. Each release names the PX4 version of its prebuilt engines.
+
+| Tool | Date | PX4 of the prebuilt engines | `engine_schema` |
+|---|---|---|---|
+| 0.1.0 | 2026-10-02 | v1.17.0 | 1 |
 
 ## 2. The engine output (`engine_schema`)
 
@@ -78,7 +86,8 @@ against every installed Gazebo and Protobuf version.
 
 ## Prebuilt engines
 
-`engine/package.sh` puts a built engine into an archive named
+`engine/package.sh` puts a built engine, this project's license and PX4's
+license into an archive named
 `px4_ca_engine-px4-<PX4 version>-schema<engine_schema>-<platform>.tar.gz` with a
 SHA-256 checksum. The CI workflow builds these for every push:
 
@@ -103,5 +112,8 @@ local changes.
 | `actions/setup-python` | v7.0.0, pinned by commit |
 | Python job | 3.11, 3.12, 3.13, 3.14 |
 | `actions/upload-artifact` | v7.0.1, pinned by commit |
+| `actions/download-artifact` | v8.0.1, pinned by commit |
+| `actions/attest-build-provenance` | v4.2.2, pinned by commit |
+| `build` (Python packaging) | 1.6.1 |
 | Linux engine jobs | `ubuntu-24.04` and `ubuntu-24.04-arm`, container `px4io/px4-dev:v1.17.0` |
 | macOS engine job | `macos-26`, Python 3.13 for PX4's build scripts |

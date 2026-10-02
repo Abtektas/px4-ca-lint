@@ -12,7 +12,7 @@ from pathlib import Path
 SUPPORTED_ENGINE_SCHEMAS = (1,)
 
 ENGINE_ENV = "PX4_CA_ENGINE"
-_DEFAULT_LOCATIONS = ("build/engine/px4_ca_engine",)
+ENGINE_NAME = "px4_ca_engine"
 _TIMEOUT_S = 60
 
 # exit codes of px4_ca_engine
@@ -25,6 +25,17 @@ class EngineError(Exception):
     """The engine is missing, failed, or wrote output this tool cannot read."""
 
 
+def user_engine_path() -> Path:
+    """Where a downloaded engine is expected: the user's data directory."""
+    data_home = os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local" / "share")
+    return Path(data_home) / "px4-ca-lint" / ENGINE_NAME
+
+
+def default_locations() -> list[Path]:
+    # an engine built in the current directory wins over an installed one
+    return [Path("build") / "engine" / ENGINE_NAME, user_engine_path()]
+
+
 def find_engine(explicit: str | None = None) -> Path:
     if explicit:
         candidates = [Path(explicit)]
@@ -35,7 +46,7 @@ def find_engine(explicit: str | None = None) -> Path:
         source = ENGINE_ENV
 
     else:
-        candidates = [Path(location) for location in _DEFAULT_LOCATIONS]
+        candidates = default_locations()
         source = None
 
     for candidate in candidates:
@@ -46,8 +57,8 @@ def find_engine(explicit: str | None = None) -> Path:
         raise EngineError(f"{source}: '{candidates[0]}' is not an executable file")
 
     raise EngineError(
-        "px4_ca_engine not found. Build it with engine/build.sh, then pass --engine PATH "
-        f"or set {ENGINE_ENV}."
+        f"{ENGINE_NAME} not found. Put the engine at '{user_engine_path()}', "
+        f"pass --engine PATH or set {ENGINE_ENV}. See the Install section of the README."
     )
 
 

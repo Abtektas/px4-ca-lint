@@ -5,7 +5,10 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ## Unreleased
 
-Nothing has been released yet. The first release will be 0.1.0.
+## 0.1.0 - 2026-10-02
+
+First release. Prebuilt engines contain the control allocation code of PX4
+v1.17.0 (`engine_schema` 1).
 
 ### Added
 
@@ -21,5 +24,7 @@ Nothing has been released yet. The first release will be 0.1.0.
   requests.
 - `px4-ca-lint diff BEFORE AFTER` compares two parameter files: parameters,
   matrix values and findings.
-- Engine builds for Linux x86_64, Linux arm64 and macOS arm64 in CI, packaged
-  with a checksum.
+- Prebuilt engines for Linux x86_64, Linux arm64 and macOS arm64, with
+  checksums and build provenance.
+- A downloaded engine is found in `~/.local/share/px4-ca-lint/`.
+- Findings link to the document of their rule.

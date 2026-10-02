@@ -109,7 +109,7 @@ class Report(unittest.TestCase):
     def test_markdown(self):
         text = render_markdown(build_report(param_file(), engine_result(weak_axes_zeroed=["yaw"])))
         self.assertIn("### px4-ca-lint report: 0 error(s), 1 warning(s)", text)
-        self.assertIn("- **warning CA004** (matrix 0):", text)
+        self.assertIn("- **warning [CA004](https://github.com/Abtektas/px4-ca-lint/blob/", text)
         self.assertIn("| axis | motor0 | servo0 |", text)
         self.assertIn("| roll | 1.500 | -0.500 |", text)
         self.assertIn(f"_{DISCLAIMER}_", text)

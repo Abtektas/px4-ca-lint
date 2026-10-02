@@ -41,6 +41,14 @@ RULES = {
 }
 
 
+def rule_url(rule_id: str) -> str:
+    """Where the document of a rule is, for the version of the tool that is running."""
+    from . import __version__
+
+    ref = "main" if "dev" in __version__ else f"v{__version__}"
+    return f"https://github.com/Abtektas/px4-ca-lint/blob/{ref}/rules/{rule_id}.md"
+
+
 @dataclass(frozen=True)
 class Options:
     # CA010: largest accepted |mix| on a thrust axis

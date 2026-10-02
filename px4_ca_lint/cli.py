@@ -66,7 +66,7 @@ def _add_common_options(parser: argparse.ArgumentParser, fail_on_help: str) -> N
     parser.add_argument(
         "--engine",
         metavar="PATH",
-        help=f"path to px4_ca_engine (default: ${ENGINE_ENV}, then build/engine)",
+        help=f"path to px4_ca_engine (default: ${ENGINE_ENV}, then build/engine, then the user data directory)",
     )
     parser.add_argument("--fail-on", choices=(*LEVELS, "never"), default=ERROR, help=fail_on_help)
     parser.add_argument(

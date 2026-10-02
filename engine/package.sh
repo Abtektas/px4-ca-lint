@@ -2,17 +2,21 @@
 # Put a built engine into an archive with a checksum, and print what it needs
 # from the system it runs on.
 #
-# usage: engine/package.sh <px4_ca_engine> <platform, e.g. linux-x86_64> <output directory>
+# usage: engine/package.sh <px4_ca_engine> <path to PX4-Autopilot> <platform, e.g. linux-x86_64> <output directory>
+#
+# The archive contains PX4's license text, because the engine contains compiled
+# PX4 code.
 set -euo pipefail
 
-if [ $# -ne 3 ]; then
-	echo "usage: $0 <px4_ca_engine> <platform> <output directory>" >&2
+if [ $# -ne 4 ]; then
+	echo "usage: $0 <px4_ca_engine> <path to PX4-Autopilot> <platform> <output directory>" >&2
 	exit 64
 fi
 
 ENGINE="$1"
-PLATFORM="$2"
-OUT="$3"
+PX4_DIR="$2"
+PLATFORM="$3"
+OUT="$4"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 WORK="$(mktemp -d)"
 trap 'rm -rf "${WORK}"' EXIT
@@ -39,6 +43,7 @@ NAME="px4_ca_engine-px4-${PX4_VERSION}-schema${SCHEMA}-${PLATFORM}"
 mkdir -p "${OUT}" "${WORK}/${NAME}"
 cp "${ENGINE}" "${WORK}/${NAME}/px4_ca_engine"
 cp "${HERE}/../LICENSE" "${WORK}/${NAME}/LICENSE"
+cp "${PX4_DIR}/LICENSE" "${WORK}/${NAME}/LICENSE-PX4"
 
 {
 	echo "px4_ca_engine for px4-ca-lint"
@@ -46,9 +51,10 @@ cp "${HERE}/../LICENSE" "${WORK}/${NAME}/LICENSE"
 	echo "engine_schema: ${SCHEMA}"
 	echo "platform: ${PLATFORM}"
 	echo
-	echo "This program contains code of the PX4 Autopilot project, which is licensed"
-	echo "under the BSD 3-Clause license by the PX4 Development Team:"
-	echo "https://github.com/PX4/PX4-Autopilot/blob/${PX4_VERSION}/LICENSE"
+	echo "This program contains compiled code of the PX4 Autopilot project"
+	echo "(https://github.com/PX4/PX4-Autopilot), copyright PX4 Development Team,"
+	echo "licensed under the BSD 3-Clause license. Its license text is in LICENSE-PX4."
+	echo "The px4-ca-lint code is licensed as stated in LICENSE."
 	echo
 	echo "Provided \"as is\", without warranty of any kind. See LICENSE."
 } > "${WORK}/${NAME}/README.txt"

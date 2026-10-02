@@ -6,7 +6,7 @@ import json
 
 from . import DISCLAIMER, __version__
 from .params import ParamFile
-from .rules import AXES, ERROR, RULES, WARNING, Result
+from .rules import AXES, ERROR, RULES, WARNING, Result, rule_url
 
 _MAX_LISTED_UNKNOWN = 10
 
@@ -92,7 +92,7 @@ def build_report(param_file: ParamFile, engine_result: dict, checked: Result) ->
         },
         "notes": param_file.notes + _unknown_parameter_notes(engine_result),
         "summary": {"errors": checked.count(ERROR), "warnings": checked.count(WARNING)},
-        "findings": [finding.as_dict() for finding in checked.findings],
+        "findings": [{**finding.as_dict(), "url": rule_url(finding.rule)} for finding in checked.findings],
         "rules_not_checked": checked.not_checked,
         "matrices": matrices,
         "disclaimer": DISCLAIMER,
@@ -176,7 +176,7 @@ def render_text(report: dict) -> str:
     for finding in report["findings"]:
         where = "" if finding["matrix"] is None else f" matrix {finding['matrix']}:"
         lines.append(f"  {finding['level']} {finding['rule']}{where} {finding['message']}")
-        lines.append(f"      {RULES[finding['rule']].title}, see rules/{finding['rule']}.md")
+        lines.append(f"      {RULES[finding['rule']].title}: {finding['url']}")
 
     for rule, reason in report["rules_not_checked"].items():
         lines.append(f"  {rule} was not checked: {reason}")
@@ -224,7 +224,9 @@ def render_markdown(report: dict) -> str:
 
     for finding in report["findings"]:
         where = "" if finding["matrix"] is None else f" (matrix {finding['matrix']})"
-        lines.append(f"- **{finding['level']} {finding['rule']}**{where}: {finding['message']}")
+        lines.append(
+            f"- **{finding['level']} [{finding['rule']}]({finding['url']})**{where}: {finding['message']}"
+        )
 
     for rule, reason in report["rules_not_checked"].items():
         lines.append(f"- {rule} was not checked: {reason}")

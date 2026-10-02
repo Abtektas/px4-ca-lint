@@ -48,6 +48,17 @@ class Rules(unittest.TestCase):
         for rule in RULES:
             self.assertTrue(Path("rules", f"{rule}.md").is_file(), rule)
 
+    def test_rule_links_follow_the_version(self):
+        from unittest import mock
+
+        from px4_ca_lint.rules import rule_url
+
+        with mock.patch("px4_ca_lint.__version__", "0.2.0.dev0"):
+            self.assertIn("/blob/main/rules/CA010.md", rule_url("CA010"))
+
+        with mock.patch("px4_ca_lint.__version__", "0.2.0"):
+            self.assertIn("/blob/v0.2.0/rules/CA010.md", rule_url("CA010"))
+
     def test_healthy_matrix_has_no_findings(self):
         result = check(engine_result(healthy()))
         self.assertEqual(result.findings, [])

@@ -2,7 +2,10 @@ name: tests
 
 on:
   push:
+    branches: ["**"]
   pull_request:
+  # the release workflow runs these jobs before it makes a release
+  workflow_call:
 
 permissions:
   contents: read
@@ -70,7 +73,7 @@ jobs:
           PX4_CA_SITL_BUILD: build/sitl
         run: python3 -m unittest -v tests.test_sitl
       - name: Package the engine
-        run: engine/package.sh build/engine/px4_ca_engine "linux-${{ matrix.arch }}" dist
+        run: engine/package.sh build/engine/px4_ca_engine "$RUNNER_TEMP/px4" "linux-${{ matrix.arch }}" dist
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: px4_ca_engine-linux-${{ matrix.arch }}
@@ -98,7 +101,7 @@ jobs:
           PX4_CA_ENGINE: build/engine/px4_ca_engine
         run: PX4_CA_PX4_DIR="$RUNNER_TEMP/px4" python -m unittest discover -s tests -t .
       - name: Package the engine
-        run: engine/package.sh build/engine/px4_ca_engine macos-arm64 dist
+        run: engine/package.sh build/engine/px4_ca_engine "$RUNNER_TEMP/px4" macos-arm64 dist
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: px4_ca_engine-macos-arm64
