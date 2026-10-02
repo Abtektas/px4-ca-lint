@@ -231,10 +231,37 @@ int main(int argc, char **argv)
 		fprintf(out, "    {\n      \"index\": %d,\n      \"num_actuators\": %d,\n", i, num_actuators);
 		fprintf(out, "      \"method\": \"%s\",\n", methodName(methods[i]));
 		fprintf(out, "      \"normalize_rpy\": %s,\n", normalize_rpy[i] ? "true" : "false");
+#if defined(PX4_CA_ENGINE_HAS_DROPPED_AXES)
 		fprintf(out, "      \"dropped_axes_bitmask\": %d,\n", (int)allocation.getDroppedAxes());
+#else
+		// this PX4 version does not report dropped axes
+		fputs("      \"dropped_axes_bitmask\": null,\n", out);
+#endif
+
+		// Actuators are numbered across all matrices, motors first, then servos.
+		fputs("      \"actuators\": [", out);
+		bool first = true;
+		const int num_motors = config.num_actuators[(int)ActuatorType::MOTORS];
+
+		for (int k = 0; k < config.totalNumActuators(); k++) {
+			if (config.matrix_selection_indexes[k] != i) {
+				continue;
+			}
+
+			if (k < num_motors) {
+				fprintf(out, "%s{\"type\": \"motor\", \"index\": %d}", first ? "" : ", ", k);
+
+			} else {
+				fprintf(out, "%s{\"type\": \"servo\", \"index\": %d}", first ? "" : ", ", k - num_motors);
+			}
+
+			first = false;
+		}
+
+		fputs("],\n", out);
 
 		fputs("      \"weak_axes_zeroed\": [", out);
-		bool first = true;
+		first = true;
 
 		for (int axis = 0; axis < ControlAllocation::NUM_AXES; axis++) {
 			if (weak_axis[axis]) {

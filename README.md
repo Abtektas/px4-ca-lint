@@ -6,8 +6,9 @@ Check a PX4 control allocation configuration before it flies.
 own actuator effectiveness and control allocation code on them, and reports the
 resulting matrices. No vehicle and no simulator are needed.
 
-**Status: early development.** Only the engine exists so far. There is no
-release and the output format can still change.
+**Status: early development.** The tool prints the matrices; the checks that
+turn them into findings are not written yet. There is no release and the output
+format can still change.
 
 ## Safety and liability
 
@@ -30,12 +31,45 @@ uses PX4's parameter system and the same classes the `control_allocator` module
 uses, so the matrices are the ones that PX4 version computes. The PX4 tree is
 not modified; the engine is built through PX4's external modules mechanism.
 
+The output names the PX4 version and commit the engine was built against. A
+result is only valid for that PX4 version.
+
+## Usage
+
+Build the engine once. This needs a PX4 checkout that can build
+`px4_sitl_test`:
+
 ```
 engine/build.sh <path to PX4-Autopilot>
-build/engine/px4_ca_engine examples/standard_vtol_pusher_offset.params out.json
 ```
 
-The output names the PX4 version and commit the engine was built against.
+Then run the tool on a parameter file (Python 3.11 or newer, no dependencies):
+
+```
+python3 -m px4_ca_lint examples/standard_vtol_pusher_offset.params
+python3 -m px4_ca_lint --format json examples/standard_vtol_pusher_offset.params
+```
+
+The engine is looked up in `--engine PATH`, then `$PX4_CA_ENGINE`, then
+`build/engine/px4_ca_engine`.
+
+Accepted parameter files:
+
+| Format | Looks like |
+|---|---|
+| plain | `CA_ROTOR_COUNT 5` |
+| PX4 airframe script | `param set-default CA_ROTOR_COUNT 5` |
+| QGroundControl export | tab separated, `1  1  CA_ROTOR_COUNT  5  6` |
+
+Parameters that are not in the file keep PX4's default value. For an airframe
+script, files it sources are not followed and `if` blocks are not evaluated;
+the report says so when that applies.
+
+Supported `CA_AIRFRAME` values so far: 0 (multirotor) and 2 (standard VTOL).
+
+Exit code 0 means the report was produced, 2 means an error.
+
+Tests: `python3 -m unittest discover -s tests -t .`
 
 ## Example
 

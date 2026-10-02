@@ -36,6 +36,14 @@ target_compile_definitions(px4_ca_engine PRIVATE
 	PX4_CA_ENGINE_PX4_COMMIT="${PX4_CA_ENGINE_PX4_COMMIT}"
 )
 
+# ControlAllocation::getDroppedAxes() was added after PX4 v1.17.0.
+file(STRINGS ${PX4_SOURCE_DIR}/src/lib/control_allocation/control_allocation/ControlAllocation.hpp
+	_dropped_axes_api REGEX "getDroppedAxes")
+
+if(_dropped_axes_api)
+	target_compile_definitions(px4_ca_engine PRIVATE PX4_CA_ENGINE_HAS_DROPPED_AXES)
+endif()
+
 set(_engine_libs
 	VehicleActuatorEffectiveness
 	ControlAllocation

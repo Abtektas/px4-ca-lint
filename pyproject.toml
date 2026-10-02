@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling>=1.32"]
+build-backend = "hatchling.build"
+
+[project]
+name = "px4-ca-lint"
+dynamic = ["version"]
+description = "Offline review aid for PX4 control allocation parameters"
+readme = "README.md"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "A. Burak Tektas" }]
+dependencies = []
+
+[project.scripts]
+px4-ca-lint = "px4_ca_lint.cli:main"
+
+[tool.hatch.version]
+path = "px4_ca_lint/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["px4_ca_lint"]
