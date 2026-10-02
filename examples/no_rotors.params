@@ -1,0 +1,6 @@
+# Rotor positions are set but CA_ROTOR_COUNT is missing, so PX4 uses no rotors.
+CA_AIRFRAME 0
+CA_ROTOR0_PX 0.15
+CA_ROTOR0_PY 0.15
+CA_ROTOR1_PX -0.15
+CA_ROTOR1_PY -0.15

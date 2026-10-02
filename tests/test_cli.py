@@ -54,6 +54,7 @@ class WithEngine(unittest.TestCase):
 
     def test_qgc_export(self):
         report = self.report("examples/quad_qgc_export.params")
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})
         self.assertEqual(report["input"]["format"], "qgc")
         self.assertEqual(report["airframe"]["num_motors"], 4)
         self.assertEqual(report["matrices"][0]["actuators"], ["motor0", "motor1", "motor2", "motor3"])
@@ -62,6 +63,24 @@ class WithEngine(unittest.TestCase):
         code, stdout, _ = run("--engine", ENGINE, "examples/standard_vtol.params")
         self.assertEqual(code, 0)
         self.assertIn("Standard VTOL", stdout)
+        self.assertIn("0 error(s), 0 warning(s)", stdout)
+
+    def found(self, path):
+        return sorted({finding["rule"] for finding in self.report(path)["findings"]})
+
+    def test_known_problems_trigger_their_rules(self):
+        self.assertEqual(self.found("examples/standard_vtol.params"), [])
+        self.assertEqual(self.found("examples/quad_qgc_export.params"), [])
+        self.assertEqual(self.found("examples/standard_vtol_pusher_offset.params"), ["CA010", "CA011"])
+        self.assertEqual(self.found("examples/quad_wrong_spin.params"), ["CA020"])
+
+    def test_exit_codes(self):
+        warnings = "examples/standard_vtol_pusher_offset.params"
+        self.assertEqual(run("--engine", ENGINE, warnings)[0], 0)
+        self.assertEqual(run("--engine", ENGINE, "--fail-on", "warning", warnings)[0], 1)
+        self.assertEqual(run("--engine", ENGINE, "--fail-on", "warning", "--ignore", "CA010,ca011", warnings)[0], 0)
+        self.assertEqual(run("--engine", ENGINE, "examples/no_rotors.params")[0], 1)
+        self.assertEqual(run("--engine", ENGINE, "--fail-on", "never", "examples/no_rotors.params")[0], 0)
 
     def test_unsupported_airframe(self):
         path = Path(os.environ.get("TMPDIR", "/tmp")) / "px4-ca-lint-test-unsupported.params"

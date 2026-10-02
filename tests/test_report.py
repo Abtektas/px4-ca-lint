@@ -3,7 +3,9 @@ import unittest
 
 from px4_ca_lint import DISCLAIMER
 from px4_ca_lint.params import ParamFile
-from px4_ca_lint.report import build_report, render_json, render_text
+from px4_ca_lint.report import render_json, render_text
+from px4_ca_lint.report import build_report as _build_report
+from px4_ca_lint.rules import check
 
 ZERO = [0, 0]
 
@@ -41,6 +43,10 @@ def engine_result(**matrix_overrides):
     }
 
 
+def build_report(parsed, result):
+    return _build_report(parsed, result, check(result))
+
+
 def param_file():
     return ParamFile(path="x.params", format="plain", params={"CA_AIRFRAME": "0", "CA_ROTOR_COUNT": "1"})
 
@@ -73,6 +79,19 @@ class Report(unittest.TestCase):
         notes = build_report(param_file(), result)["notes"]
         self.assertEqual(len(notes), 1)
         self.assertIn("CA_GONE, AAA_OLD", notes[0])
+
+    def test_findings_are_in_both_formats(self):
+        report = build_report(param_file(), engine_result(weak_axes_zeroed=["yaw"]))
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 1})
+        self.assertEqual(report["findings"][0]["rule"], "CA004")
+        text = render_text(report)
+        self.assertIn("warning CA004 matrix 0:", text)
+        self.assertIn("0 error(s), 1 warning(s)", text)
+
+    def test_rules_that_could_not_run_are_listed(self):
+        report = build_report(param_file(), engine_result(dropped_axes_bitmask=None))
+        self.assertIn("CA002", report["rules_not_checked"])
+        self.assertIn("CA002 was not checked", render_text(report))
 
     def test_json_is_valid_and_has_the_disclaimer(self):
         report = json.loads(render_json(build_report(param_file(), engine_result())))

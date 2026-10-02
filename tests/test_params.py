@@ -1,4 +1,6 @@
+import tempfile
 import unittest
+from pathlib import Path
 
 from px4_ca_lint.params import ParamFileError, detect_format, parse_file, parse_text
 
@@ -56,8 +58,37 @@ class Airframe(unittest.TestCase):
     def test_limits_are_reported(self):
         notes = "\n".join(parse_text(self.SCRIPT).notes)
         self.assertIn("non-numeric", notes)
-        self.assertIn("sources other files", notes)
+        self.assertIn("was not found", notes)
         self.assertIn("conditional", notes)
+
+
+class SourcedFiles(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        # same layout as PX4's ROMFS/px4fmu_common
+        self.root = Path(directory.name)
+        (self.root / "init.d" / "airframes").mkdir(parents=True)
+        (self.root / "init.d" / "rc.fw_defaults").write_text(
+            "param set-default CA_AIRFRAME 1\nparam set-default CA_ROTOR_COUNT 1\n"
+        )
+        self.script = self.root / "init.d" / "airframes" / "2100_plane"
+
+    def test_sourced_defaults_are_included(self):
+        self.script.write_text(". ${R}etc/init.d/rc.fw_defaults\nparam set-default CA_ROTOR_COUNT 2\n")
+        result = parse_file(self.script)
+        self.assertEqual(result.params, {"CA_AIRFRAME": "1", "CA_ROTOR_COUNT": "2"})
+        self.assertEqual(result.notes, ["included the sourced file rc.fw_defaults"])
+
+    def test_missing_sourced_file_is_reported(self):
+        self.script.write_text(". ${R}etc/init.d/rc.none\nparam set-default CA_ROTOR_COUNT 2\n")
+        notes = "\n".join(parse_file(self.script).notes)
+        self.assertIn("was not found", notes)
+        self.assertIn("CA_AIRFRAME is not set", notes)
+
+    def test_a_script_that_sources_itself_ends(self):
+        self.script.write_text(". ${R}etc/init.d/airframes/2100_plane\nparam set-default CA_AIRFRAME 0\n")
+        self.assertEqual(parse_file(self.script).params, {"CA_AIRFRAME": "0"})
 
 
 class Qgc(unittest.TestCase):

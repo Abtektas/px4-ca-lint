@@ -6,9 +6,8 @@ Check a PX4 control allocation configuration before it flies.
 own actuator effectiveness and control allocation code on them, and reports the
 resulting matrices. No vehicle and no simulator are needed.
 
-**Status: early development.** The tool prints the matrices; the checks that
-turn them into findings are not written yet. There is no release and the output
-format can still change.
+**Status: early development.** There is no release and the output format and
+the rules can still change.
 
 ## Safety and liability
 
@@ -62,12 +61,33 @@ Accepted parameter files:
 | QGroundControl export | tab separated, `1  1  CA_ROTOR_COUNT  5  6` |
 
 Parameters that are not in the file keep PX4's default value. For an airframe
-script, files it sources are not followed and `if` blocks are not evaluated;
-the report says so when that applies.
+script, files it sources (such as `rc.fw_defaults`) are read when the script is
+inside a PX4 `ROMFS` directory; `if` blocks are not evaluated. The report says
+so when either applies.
 
 Supported `CA_AIRFRAME` values so far: 0 (multirotor) and 2 (standard VTOL).
 
-Exit code 0 means the report was produced, 2 means an error.
+## Findings
+
+| Rule | Level | Finds |
+|---|---|---|
+| [CA001](rules/CA001.md) | error | PX4 produced no usable effectiveness matrix |
+| [CA002](rules/CA002.md) | error | PX4 dropped a control axis |
+| [CA003](rules/CA003.md) | error | a matrix contains NaN or infinity |
+| [CA004](rules/CA004.md) | warning | PX4 ignores an axis with weak authority |
+| [CA010](rules/CA010.md) | warning | thrust gain above the limit |
+| [CA011](rules/CA011.md) | warning | thrust command to an actuator that produces no thrust on that axis |
+| [CA020](rules/CA020.md) | warning | a motor is not used for roll or pitch |
+
+Options: `--ignore CA011,CA020` skips rules, `--max-thrust-gain` sets the limit
+of CA010, `--fail-on warning|error|never` chooses what gives exit code 1 (the
+default is `error`).
+
+| Exit code | Meaning |
+|---|---|
+| 0 | report produced, nothing at or above the `--fail-on` level |
+| 1 | report produced, findings at or above the `--fail-on` level |
+| 2 | no report: bad arguments, unreadable file, engine missing or failed, unsupported airframe |
 
 Tests: `python3 -m unittest discover -s tests -t .`
 

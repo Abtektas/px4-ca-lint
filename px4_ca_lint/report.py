@@ -6,9 +6,7 @@ import json
 
 from . import DISCLAIMER, __version__
 from .params import ParamFile
-
-# order of ControlAllocation::ControlAxis in PX4, also the bit order of dropped_axes_bitmask
-AXES = ("roll", "pitch", "yaw", "thrust_x", "thrust_y", "thrust_z")
+from .rules import AXES, ERROR, RULES, WARNING, Result
 
 _MAX_LISTED_UNKNOWN = 10
 
@@ -58,10 +56,10 @@ def _unknown_parameter_notes(engine_result: dict) -> list[str]:
     return [f"{len(unknown)} parameter(s) do not exist in PX4 {version} and were ignored: {listed}{suffix}"]
 
 
-def build_report(param_file: ParamFile, engine_result: dict) -> dict:
+def build_report(param_file: ParamFile, engine_result: dict, checked: Result) -> dict:
     matrices = []
 
-    for matrix in engine_result["matrices"]:
+    for matrix in engine_result.get("matrices", []):
         matrices.append(
             {
                 "index": matrix["index"],
@@ -88,10 +86,13 @@ def build_report(param_file: ParamFile, engine_result: dict) -> dict:
         "airframe": {
             "ca_airframe": engine_result["ca_airframe"],
             "name": engine_result["effectiveness_source"],
-            "num_motors": engine_result["num_motors"],
-            "num_servos": engine_result["num_servos"],
+            "num_motors": engine_result.get("num_motors", 0),
+            "num_servos": engine_result.get("num_servos", 0),
         },
         "notes": param_file.notes + _unknown_parameter_notes(engine_result),
+        "summary": {"errors": checked.count(ERROR), "warnings": checked.count(WARNING)},
+        "findings": [finding.as_dict() for finding in checked.findings],
+        "rules_not_checked": checked.not_checked,
         "matrices": matrices,
         "disclaimer": DISCLAIMER,
     }
@@ -168,6 +169,19 @@ def render_text(report: dict) -> str:
                 f"  {axis['axis'].ljust(name_width)}  {axis['status']}"
                 + (f" (authority {_number(axis['authority'])})" if axis["authority"] > 0 else "")
             )
+
+    lines += ["", "Findings"]
+
+    for finding in report["findings"]:
+        where = "" if finding["matrix"] is None else f" matrix {finding['matrix']}:"
+        lines.append(f"  {finding['level']} {finding['rule']}{where} {finding['message']}")
+        lines.append(f"      {RULES[finding['rule']].title}, see rules/{finding['rule']}.md")
+
+    for rule, reason in report["rules_not_checked"].items():
+        lines.append(f"  {rule} was not checked: {reason}")
+
+    summary = report["summary"]
+    lines.append(f"  {summary['errors']} error(s), {summary['warnings']} warning(s)")
 
     lines += [
         "",

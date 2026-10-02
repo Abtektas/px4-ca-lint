@@ -52,7 +52,10 @@ def find_engine(explicit: str | None = None) -> Path:
 
 
 def run_engine(engine: Path, params: dict[str, str]) -> dict:
-    """Run the engine on the given parameters and return its JSON output."""
+    """Run the engine on the given parameters and return its JSON output.
+
+    When PX4 cannot produce a matrix the output has an "error" entry and no matrices.
+    """
     with tempfile.TemporaryDirectory(prefix="px4-ca-lint-") as directory:
         params_path = Path(directory) / "input.params"
         output_path = Path(directory) / "output.json"
@@ -94,8 +97,9 @@ def run_engine(engine: Path, params: dict[str, str]) -> dict:
             f"(engine built against PX4 {result.get('px4_version')})"
         )
 
-    if code == _EXIT_PX4_FAILED:
-        raise EngineError("PX4 did not produce an effectiveness matrix for these parameters")
+    if code == _EXIT_PX4_FAILED and result is not None and "error" in result:
+        # not a tool failure: the rules report it as a finding
+        code = 0
 
     if code != 0 or result is None:
         detail = process.stderr.strip().splitlines()[-1:] or ["no error message"]
