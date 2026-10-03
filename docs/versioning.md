@@ -115,5 +115,6 @@ local changes.
 | `actions/download-artifact` | v8.0.1, pinned by commit |
 | `actions/attest-build-provenance` | v4.2.2, pinned by commit |
 | `build` (Python packaging) | 1.6.1 |
+| `astral-sh/setup-uv` | v10.2.0, pinned by commit; uv for the install check and for PX4's build requirements on macOS |
 | Linux engine jobs | `ubuntu-24.04` and `ubuntu-24.04-arm`, container `px4io/px4-dev:v1.17.0` |
 | macOS engine job | `macos-26`, Python 3.13 for PX4's build scripts |

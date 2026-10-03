@@ -18,11 +18,13 @@ permissions:
 
 jobs:
   install:
-    name: ${{ matrix.platform }} on ${{ matrix.runner }}
+    name: ${{ matrix.platform }} on ${{ matrix.runner }}, ${{ matrix.installer }}
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
+        platform: [linux-x86_64, linux-arm64, macos-arm64]
+        installer: [uv, venv]
         include:
           - platform: linux-x86_64
             runner: ubuntu-24.04
@@ -42,7 +44,13 @@ jobs:
         with:
           ref: v${{ env.VERSION }}
           sparse-checkout: examples
-      - name: Install the Python package
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        if: matrix.installer == 'uv'
+      - name: Install the Python package with uv
+        if: matrix.installer == 'uv'
+        run: uv tool install "https://github.com/Abtektas/px4-ca-lint/releases/download/v${VERSION}/px4_ca_lint-${VERSION}-py3-none-any.whl"
+      - name: Install the Python package in a virtual environment
+        if: matrix.installer == 'venv'
         run: |
           python3 --version
           python3 -m venv "$RUNNER_TEMP/venv"

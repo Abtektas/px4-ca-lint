@@ -7,12 +7,14 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ### Changed
 
-- The install instructions use a virtual environment.
+- The install instructions recommend `uv tool install`, with pipx and a
+  virtual environment as alternatives.
 
 ### Added
 
-- `install check` workflow: follows the install steps with the files of a
-  published release on clean machines.
+- `install check` workflow: follows the install steps, with uv and with a
+  virtual environment, with the files of a published release on clean
+  machines.
 
 ## 0.1.0 - 2026-10-02
 

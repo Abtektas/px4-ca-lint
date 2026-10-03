@@ -16,7 +16,10 @@ in English.
 python3 -m unittest discover -s tests -t .
 ```
 
-This needs Python 3.11 or newer and nothing else. Tests that need the engine, a
+This needs Python 3.11 or newer and nothing else. With
+[uv](https://docs.astral.sh/uv/) you can run the tests on any supported Python
+version without installing it first, for example
+`uv run --no-project --python 3.11 python -m unittest discover -s tests -t .`. Tests that need the engine, a
 PX4 checkout or a PX4 SITL build are skipped unless the environment variables
 described in `tests/test_golden.py` and `tests/test_sitl.py` are set. The CI
 workflow runs all of them.
