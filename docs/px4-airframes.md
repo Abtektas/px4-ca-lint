@@ -32,15 +32,20 @@ Unsupported scripts by `CA_AIRFRAME` value:
 
 ### Findings
 
-55 of the 57 checked scripts have no findings. Two have one finding each:
+54 of the 57 checked scripts have no findings. Three have findings, all about
+`CA_ROTOR_COUNT`:
 
-| Script | Finding | Explanation |
+| Script | Findings | Explanation |
 |---|---|---|
-| `init.d/airframes/4901_crazyflie21` | CA001 | The script sets `CA_ROTOR0_PX` to `CA_ROTOR3_KM` but not `CA_ROTOR_COUNT`, whose default is 0. No file it sources and no board default of that board sets it either. |
-| `init.d-posix/airframes/3011_jsbsim_hexarotor_x` | CA001 | The same: six rotors are described, `CA_ROTOR_COUNT` is not set. |
+| `init.d/airframes/4901_crazyflie21` | CA001, CA021 | The script sets `CA_ROTOR0_PX` to `CA_ROTOR3_KM` but not `CA_ROTOR_COUNT`, whose default is 0. No file it sources and no board default of that board sets it either. |
+| `init.d-posix/airframes/3011_jsbsim_hexarotor_x` | CA001, CA021 | The same: six rotors are described, `CA_ROTOR_COUNT` is not set. |
+| `init.d/airframes/1002_standard_vtol.hil` | CA021 | The script sets `CA_ROTOR_COUNT 5` and, further down, `CA_ROTOR_COUNT 4`. The last value wins, so rotor 4, the forward thrust motor, is not part of the allocation. |
 
-Both were found by reading the scripts with this tool. They were not
-reproduced on a vehicle or in the JSBSim simulation, so whether these airframes
+The first two are reported as
+[PX4 issue 29006](https://github.com/PX4/PX4-Autopilot/issues/29006). The
+JSBSim hexarotor was started in PX4 v1.17.0 SITL, where
+`control_allocator status` shows no configured actuators. Nothing was tried on
+a Crazyflie, in the JSBSim simulation or in HIL, so whether these airframes
 work in practice has not been checked.
 
 The limit of rule CA010 was chosen with these scripts: the omnicopter airframes

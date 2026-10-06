@@ -110,7 +110,8 @@ def _diff_parser() -> argparse.ArgumentParser:
 def _analyse(path: str, args: argparse.Namespace) -> dict:
     param_file = parse_file(path, None if args.input_format == "auto" else args.input_format)
     engine_result = run_engine(find_engine(args.engine), param_file.params)
-    checked = check(engine_result, Options(max_thrust_gain=args.max_thrust_gain, ignore=args.ignore))
+    options = Options(max_thrust_gain=args.max_thrust_gain, ignore=args.ignore)
+    checked = check(engine_result, options, param_file.params)
     return single.build_report(param_file, engine_result, checked)
 
 

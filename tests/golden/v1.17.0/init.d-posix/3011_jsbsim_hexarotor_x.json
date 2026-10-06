@@ -12,6 +12,19 @@
    "matrix": null,
    "axis": null,
    "actuators": []
+  },
+  {
+   "rule": "CA021",
+   "matrix": null,
+   "axis": null,
+   "actuators": [
+    "motor0",
+    "motor1",
+    "motor2",
+    "motor3",
+    "motor4",
+    "motor5"
+   ]
   }
  ],
  "matrices": [

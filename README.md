@@ -168,6 +168,7 @@ values give an error, not a report.
 | [CA010](rules/CA010.md) | warning | thrust gain above the limit |
 | [CA011](rules/CA011.md) | warning | thrust command to an actuator that produces no thrust on that axis |
 | [CA020](rules/CA020.md) | warning | a motor is not used for roll or pitch |
+| [CA021](rules/CA021.md) | warning | a rotor is configured but not counted by `CA_ROTOR_COUNT` |
 
 CA002 needs a PX4 version newer than v1.17.0; with the prebuilt engines the
 report says that it was not checked.

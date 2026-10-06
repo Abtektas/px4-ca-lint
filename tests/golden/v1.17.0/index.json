@@ -5,7 +5,9 @@
  },
  "init.d/1002_standard_vtol.hil": {
   "status": "checked",
-  "findings": []
+  "findings": [
+   "CA021"
+  ]
  },
  "init.d/11001_hexa_cox": {
   "status": "checked",
@@ -157,7 +159,8 @@
  "init.d/4901_crazyflie21": {
   "status": "checked",
   "findings": [
-   "CA001"
+   "CA001",
+   "CA021"
   ]
  },
  "init.d/50000_generic_rover_differential": {
@@ -411,7 +414,8 @@
  "init.d-posix/3011_jsbsim_hexarotor_x": {
   "status": "checked",
   "findings": [
-   "CA001"
+   "CA001",
+   "CA021"
   ]
  },
  "init.d-posix/4001_gz_x500": {

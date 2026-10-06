@@ -6,7 +6,16 @@
   "num_motors": 4,
   "num_servos": 3
  },
- "findings": [],
+ "findings": [
+  {
+   "rule": "CA021",
+   "matrix": null,
+   "axis": null,
+   "actuators": [
+    "motor4"
+   ]
+  }
+ ],
  "matrices": [
   {
    "index": 0,

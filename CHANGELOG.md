@@ -12,6 +12,9 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ### Added
 
+- Rule CA021: a rotor has geometry parameters but its index is
+  `CA_ROTOR_COUNT` or higher, so PX4 ignores it. New example
+  `examples/hexa_rotor_count_4.params`.
 - `install check` workflow: follows the install steps, with uv and with a
   virtual environment, with the files of a published release on clean
   machines.

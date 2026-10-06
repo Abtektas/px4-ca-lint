@@ -63,7 +63,7 @@ def summarise(script: Path, engine: Path) -> dict:
 
         return {"status": "unsupported", "ca_airframe": int(float(param_file.params["CA_AIRFRAME"]))}
 
-    report = build_report(param_file, engine_result, check(engine_result))
+    report = build_report(param_file, engine_result, check(engine_result, params=param_file.params))
     return _round(
         {
             "status": "checked",

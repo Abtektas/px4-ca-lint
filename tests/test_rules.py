@@ -131,6 +131,44 @@ class Rules(unittest.TestCase):
         servo = matrix({"roll": [1], "pitch": [1]}, [{}], types=["servo"])
         self.assertEqual(rules(check(engine_result(pusher, servo))), [])
 
+    def test_ca021_rotors_beyond_the_count(self):
+        params = {"CA_ROTOR_COUNT": "2", "CA_ROTOR1_PX": "0.2", "CA_ROTOR2_PX": "0.2", "CA_ROTOR5_AX": "1"}
+        result = check(engine_result(healthy()), params=params)
+        self.assertEqual(rules(result), ["CA021"])
+        self.assertEqual(result.findings[0].level, "warning")
+        self.assertEqual(result.findings[0].actuators, ["motor2", "motor5"])
+        self.assertIn("CA_ROTOR_COUNT is 2; PX4 uses rotors 0 to 1 only", result.findings[0].message)
+
+    def test_ca021_count_not_set(self):
+        params = {"CA_ROTOR0_PX": "0.15", "CA_ROTOR0_PY": "0.15", "CA_ROTOR1_TILT": "1"}
+        result = check(engine_result(matrix({}, []), num_motors=0), params=params)
+        self.assertEqual(rules(result), ["CA001", "CA021"])
+        self.assertEqual(result.findings[1].actuators, ["motor0", "motor1"])
+        self.assertIn("CA_ROTOR_COUNT is 0 (not set in the input); PX4 uses no rotors", result.findings[1].message)
+
+    def test_ca021_ignores_defaults_and_other_parameters(self):
+        # a parameter export lists every rotor; unused ones keep PX4's defaults
+        params = {
+            "CA_ROTOR_COUNT": "2",
+            "CA_ROTOR2_PX": "0.000000000000000000",
+            "CA_ROTOR2_AZ": "-1.0",
+            "CA_ROTOR2_CT": "6.5",
+            "CA_ROTOR2_KM": "0.05",
+            "CA_ROTOR_COUNTX": "9",
+            "CA_ROTOR12_NEW": "3",
+        }
+        self.assertEqual(rules(check(engine_result(healthy()), params=params)), [])
+
+    def test_ca021_uses_the_count_of_the_file_when_px4_gave_no_result(self):
+        failed = {"error": "PX4 did not produce an effectiveness matrix"}
+        self.assertEqual(
+            rules(check(failed, params={"CA_ROTOR_COUNT": "4", "CA_ROTOR4_PX": "1"})), ["CA001", "CA021"]
+        )
+        self.assertEqual(rules(check(failed, params={"CA_ROTOR4_PX": "1"})), ["CA001"])
+
+    def test_ca021_needs_the_input_parameters(self):
+        self.assertEqual(rules(check(engine_result(matrix({}, []), num_motors=0))), ["CA001"])
+
     def test_ignore(self):
         result = check(
             engine_result(matrix({}, [{}], weak_axes_zeroed=["yaw"], dropped_axes_bitmask=None)),

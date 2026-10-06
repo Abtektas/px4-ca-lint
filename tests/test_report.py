@@ -44,7 +44,7 @@ def engine_result(**matrix_overrides):
 
 
 def build_report(parsed, result):
-    return _build_report(parsed, result, check(result))
+    return _build_report(parsed, result, check(result, params=parsed.params))
 
 
 def param_file():

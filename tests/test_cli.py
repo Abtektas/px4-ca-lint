@@ -74,6 +74,25 @@ class WithEngine(unittest.TestCase):
         self.assertEqual(self.found("examples/standard_vtol_pusher_offset.params"), ["CA010", "CA011"])
         self.assertEqual(self.found("examples/quad_wrong_spin.params"), ["CA020"])
 
+    def test_missing_rotor_count(self):
+        code, stdout, _ = run("--engine", ENGINE, "--format", "json", "examples/no_rotors.params")
+        self.assertEqual(code, 1)
+        findings = json.loads(stdout)["findings"]
+        self.assertEqual([finding["rule"] for finding in findings], ["CA001", "CA021"])
+        self.assertEqual(findings[1]["actuators"], ["motor0", "motor1"])
+
+    def test_rotors_beyond_the_count(self):
+        # PX4 versions that report dropped axes add CA002 here, which is an error
+        example = "examples/hexa_rotor_count_4.params"
+        code, stdout, _ = run("--engine", ENGINE, "--format", "json", "--fail-on", "never", example)
+        self.assertEqual(code, 0)
+        report = json.loads(stdout)
+        self.assertEqual(report["airframe"]["num_motors"], 4)
+        uncounted = [finding for finding in report["findings"] if finding["rule"] == "CA021"]
+        self.assertEqual(len(uncounted), 1)
+        self.assertEqual(uncounted[0]["actuators"], ["motor4", "motor5"])
+        self.assertIsNone(uncounted[0]["matrix"])
+
     def test_exit_codes(self):
         warnings = "examples/standard_vtol_pusher_offset.params"
         self.assertEqual(run("--engine", ENGINE, warnings)[0], 0)

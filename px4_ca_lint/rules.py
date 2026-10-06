@@ -5,6 +5,7 @@ Every rule has a document in rules/ that explains what it checks and why.
 
 from __future__ import annotations
 
+import re
 from dataclasses import asdict, dataclass, field
 
 AXES = ("roll", "pitch", "yaw", "thrust_x", "thrust_y", "thrust_z")
@@ -18,6 +19,9 @@ LEVELS = (WARNING, ERROR)
 # PX4 sets mix entries below this to zero (ControlAllocationPseudoInverse)
 _MIX_ZERO = 1e-3
 _EFFECTIVENESS_ZERO = 1e-6
+# CA021: the rotor parameters whose PX4 default is zero. A rotor with one of them set is
+# taken as configured on purpose; thrust and moment coefficients have non-zero defaults.
+_ROTOR_GEOMETRY = re.compile(r"^CA_ROTOR(\d+)_(?:PX|PY|PZ|AX|AY|TILT)$")
 
 
 @dataclass(frozen=True)
@@ -37,6 +41,7 @@ RULES = {
         Rule("CA010", WARNING, "thrust gain above the limit"),
         Rule("CA011", WARNING, "thrust command to an actuator that produces no thrust on that axis"),
         Rule("CA020", WARNING, "a motor is not used for roll or pitch"),
+        Rule("CA021", WARNING, "a rotor is configured but not counted by CA_ROTOR_COUNT"),
     )
 }
 
@@ -210,7 +215,54 @@ def _check_unused_motor(matrix: dict, result: Result) -> None:
             )
 
 
-def check(engine_result: dict, options: Options = Options()) -> Result:
+def _rotor_count(engine_result: dict, params: dict[str, str]) -> int | None:
+    """The number of rotors PX4 uses, None when it is not known."""
+    if "num_motors" in engine_result:
+        return engine_result["num_motors"]
+
+    try:
+        return int(float(params["CA_ROTOR_COUNT"]))
+
+    except (KeyError, ValueError):
+        return None
+
+
+def _check_uncounted_rotors(engine_result: dict, params: dict[str, str], result: Result) -> None:
+    count = _rotor_count(engine_result, params)
+
+    if count is None:
+        return
+
+    configured = set()
+
+    for name, value in params.items():
+        match = _ROTOR_GEOMETRY.match(name)
+
+        if match and int(match.group(1)) >= count and float(value) != 0:
+            configured.add(int(match.group(1)))
+
+    if not configured:
+        return
+
+    labels = [f"motor{index}" for index in sorted(configured)]
+    unset = "" if "CA_ROTOR_COUNT" in params else " (not set in the input)"
+    used = {0: "no rotors", 1: "rotor 0 only"}.get(count, f"rotors 0 to {count - 1} only")
+    result.findings.append(
+        _finding(
+            "CA021",
+            f"{_join(labels)}: rotor parameters are set, but CA_ROTOR_COUNT is {count}{unset}; "
+            f"PX4 uses {used}",
+            actuators=labels,
+        )
+    )
+
+
+def check(engine_result: dict, options: Options = Options(), params: dict[str, str] | None = None) -> Result:
+    """Apply the rules to the engine output.
+
+    params are the parameters of the input file; rules that look at the input are skipped
+    without them.
+    """
     result = Result()
 
     if "error" in engine_result:
@@ -220,6 +272,9 @@ def check(engine_result: dict, options: Options = Options()) -> Result:
         result.findings.append(
             _finding("CA001", "the configuration has no actuators; check CA_ROTOR_COUNT")
         )
+
+    if params is not None:
+        _check_uncounted_rotors(engine_result, params, result)
 
     for matrix in engine_result.get("matrices", []):
         if _has_non_finite(matrix):
