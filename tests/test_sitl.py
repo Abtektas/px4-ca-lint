@@ -217,6 +217,11 @@ class CrossCheck(unittest.TestCase):
         result = self.compare(10044)
         self.assertEqual(result["num_motors"], 6)
 
+    def test_fixed_wing(self):
+        result = self.compare(10041)
+        self.assertEqual(result["effectiveness_source"], "Fixed Wing")
+        self.assertEqual((result["num_motors"], result["num_servos"]), (1, 3))
+
     def test_standard_vtol(self):
         result = self.compare(10043)
         self.assertEqual(result["effectiveness_source"], "Standard VTOL")

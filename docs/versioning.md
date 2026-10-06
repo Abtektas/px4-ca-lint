@@ -48,7 +48,8 @@ Known differences between PX4 versions that the engine handles:
 - `ControlAllocation::getDroppedAxes()` does not exist in `v1.17.0`. The engine
   build detects this and writes `null`.
 
-Supported `CA_AIRFRAME` values so far: 0 (multirotor), 2 (standard VTOL).
+Supported `CA_AIRFRAME` values so far: 0 (multirotor), 1 (fixed-wing, since tool
+0.2.0), 2 (standard VTOL).
 
 ## Python
 

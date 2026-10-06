@@ -1,0 +1,14 @@
+# A plane with one motor, two ailerons, an elevator and a rudder: the control
+# allocation parameters of PX4's airframe 2100_standard_plane.
+CA_AIRFRAME 1
+CA_ROTOR_COUNT 1
+CA_ROTOR0_PX 0.3
+CA_SV_CS_COUNT 4
+CA_SV_CS0_TYPE 1
+CA_SV_CS0_TRQ_R -0.5
+CA_SV_CS1_TYPE 2
+CA_SV_CS1_TRQ_R 0.5
+CA_SV_CS2_TYPE 3
+CA_SV_CS2_TRQ_P 1
+CA_SV_CS3_TYPE 4
+CA_SV_CS3_TRQ_Y 1

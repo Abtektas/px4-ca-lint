@@ -1,0 +1,127 @@
+{
+ "status": "checked",
+ "airframe": {
+  "ca_airframe": 1,
+  "name": "Fixed Wing",
+  "num_motors": 1,
+  "num_servos": 3
+ },
+ "findings": [],
+ "matrices": [
+  {
+   "index": 0,
+   "method": "pseudo_inverse",
+   "normalize_rpy": false,
+   "actuators": [
+    "motor0",
+    "servo0",
+    "servo1",
+    "servo2"
+   ],
+   "axes": [
+    {
+     "axis": "roll",
+     "status": "controlled",
+     "authority": 0.5
+    },
+    {
+     "axis": "pitch",
+     "status": "controlled",
+     "authority": 1
+    },
+    {
+     "axis": "yaw",
+     "status": "controlled",
+     "authority": 1
+    },
+    {
+     "axis": "thrust_x",
+     "status": "controlled",
+     "authority": 6.5
+    },
+    {
+     "axis": "thrust_y",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_z",
+     "status": "not controlled",
+     "authority": 0
+    }
+   ],
+   "effectiveness": {
+    "roll": [
+     0,
+     0,
+     -0.5,
+     0
+    ],
+    "pitch": [
+     0,
+     0,
+     0,
+     1
+    ],
+    "yaw": [
+     0,
+     1,
+     0,
+     0
+    ],
+    "thrust_x": [
+     6.5,
+     0,
+     0,
+     0
+    ],
+    "thrust_y": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "thrust_z": [
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "mix": [
+    {
+     "roll": 0,
+     "pitch": 0,
+     "yaw": 0,
+     "thrust_x": 1.0,
+     "thrust_y": 0,
+     "thrust_z": 0
+    },
+    {
+     "roll": 0,
+     "pitch": 0,
+     "yaw": 1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": 0
+    },
+    {
+     "roll": -2,
+     "pitch": 0,
+     "yaw": 0,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": 0
+    },
+    {
+     "roll": 0,
+     "pitch": 1,
+     "yaw": 0,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": 0
+    }
+   ]
+  }
+ ]
+}

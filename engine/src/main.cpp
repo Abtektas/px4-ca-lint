@@ -21,6 +21,7 @@
 #include <ControlAllocationPseudoInverse.hpp>
 #include <ControlAllocationSequentialDesaturation.hpp>
 
+#include "ActuatorEffectivenessFixedWing.hpp"
 #include "ActuatorEffectivenessMultirotor.hpp"
 #include "ActuatorEffectivenessStandardVTOL.hpp"
 
@@ -167,6 +168,8 @@ int main(int argc, char **argv)
 
 	switch (airframe) {
 	case 0: effectiveness = new ActuatorEffectivenessMultirotor(nullptr); break;
+
+	case 1: effectiveness = new ActuatorEffectivenessFixedWing(nullptr); break;
 
 	case 2: effectiveness = new ActuatorEffectivenessStandardVTOL(nullptr); break;
 

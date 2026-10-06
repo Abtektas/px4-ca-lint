@@ -12,6 +12,12 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ### Added
 
+- Fixed-wing vehicles (`CA_AIRFRAME` 1). The golden tests now cover the 23
+  plane airframe scripts of PX4 v1.17.0 and the SITL cross-check includes
+  PX4's SIH plane. New examples `examples/fixed_wing.params` and
+  `examples/fixed_wing_thrust_offset.params`. An engine built from this
+  version is needed; the prebuilt engines of 0.1.0 report the airframe as not
+  supported.
 - Rule CA021: a rotor has geometry parameters but its index is
   `CA_ROTOR_COUNT` or higher, so PX4 ignores it. New example
   `examples/hexa_rotor_count_4.params`.

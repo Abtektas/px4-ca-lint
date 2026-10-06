@@ -93,6 +93,30 @@ class WithEngine(unittest.TestCase):
         self.assertEqual(uncounted[0]["actuators"], ["motor4", "motor5"])
         self.assertIsNone(uncounted[0]["matrix"])
 
+    def test_fixed_wing(self):
+        report = self.report("examples/fixed_wing.params")
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})
+        self.assertEqual(report["airframe"]["name"], "Fixed Wing")
+        self.assertEqual(len(report["matrices"]), 1)
+        matrix = report["matrices"][0]
+        self.assertEqual(matrix["method"], "pseudo_inverse")
+        self.assertEqual(matrix["actuators"], ["motor0", "servo0", "servo1", "servo2", "servo3"])
+        # the motor only gets the thrust setpoint, every control surface only its own axis
+        commands = [
+            {axis: round(value, 3) for axis, value in row.items() if abs(value) > 1e-3} for row in matrix["mix"]
+        ]
+        self.assertEqual(
+            commands, [{"thrust_x": 1.0}, {"roll": -1.0}, {"roll": 1.0}, {"pitch": 1.0}, {"yaw": 1.0}]
+        )
+
+    def test_fixed_wing_thrust_offset(self):
+        report = self.report("examples/fixed_wing_thrust_offset.params")
+        self.assertEqual([finding["rule"] for finding in report["findings"]], ["CA011"])
+        self.assertEqual(report["findings"][0]["actuators"], ["servo2"])
+        mix = report["matrices"][0]["mix"]
+        self.assertAlmostEqual(mix[0]["thrust_x"], 1.509, places=3)
+        self.assertAlmostEqual(mix[3]["thrust_x"], 0.491, places=3)
+
     def test_exit_codes(self):
         warnings = "examples/standard_vtol_pusher_offset.params"
         self.assertEqual(run("--engine", ENGINE, warnings)[0], 0)

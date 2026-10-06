@@ -10,8 +10,8 @@ resulting matrices and likely configuration mistakes. No vehicle and no
 simulator are needed.
 
 It is meant for people who set `CA_*` parameters by hand: custom multirotor
-geometries and standard VTOLs. This is an early version; the rules and the
-output format can still change.
+geometries, planes and standard VTOLs. This is an early version; the rules and
+the output format can still change.
 
 ## Safety and liability
 
@@ -154,8 +154,12 @@ script, files it sources (such as `rc.fw_defaults`) are read when the script is
 inside a PX4 `ROMFS` directory; `if` blocks are not evaluated. The report says
 so when either applies.
 
-Supported `CA_AIRFRAME` values: 0 (multirotor) and 2 (standard VTOL). Other
-values give an error, not a report.
+Supported `CA_AIRFRAME` values: 0 (multirotor), 1 (fixed-wing) and 2 (standard
+VTOL). Other values give an error, not a report.
+
+The report shows what goes through the matrices. Control surface trim, flaps
+and spoilers (`CA_SV_CSn_TRIM`, `_FLAP`, `_SPOIL`) are applied by PX4 outside
+the matrices and are not part of it.
 
 ## Findings
 

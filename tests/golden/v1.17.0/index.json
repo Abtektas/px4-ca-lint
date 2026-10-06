@@ -18,8 +18,8 @@
   "findings": []
  },
  "init.d/1101_rc_plane_sih.hil": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/1102_tailsitter_duo_sih.hil": {
   "status": "unsupported",
@@ -62,23 +62,23 @@
   "ca_airframe": 10
  },
  "init.d/17002_TF-AutoG2": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/17003_TF-G2": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/18001_TF-B1": {
   "status": "no CA parameters"
  },
  "init.d/2100_standard_plane": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/2106_albatross": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/24001_dodeca_cox": {
   "status": "checked",
@@ -89,8 +89,8 @@
   "ca_airframe": 9
  },
  "init.d/3000_generic_wing": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d/4001_quad_x": {
   "status": "checked",
@@ -253,8 +253,8 @@
   "findings": []
  },
  "init.d-posix/10041_sihsim_airplane": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/10042_sihsim_xvert": {
   "status": "unsupported",
@@ -317,51 +317,51 @@
   "ca_airframe": 7
  },
  "init.d-posix/1030_gazebo-classic_plane": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1031_gazebo-classic_plane_cam": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1031_gazebo-classic_plane_cam.post": {
   "status": "no parameters"
  },
  "init.d-posix/1032_gazebo-classic_plane_catapult": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1033_jsbsim_rascal": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1034_flightgear_rascal-electric": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1035_gazebo-classic_techpod": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1036_jsbsim_malolo": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1037_gazebo-classic_believer": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1038_gazebo-classic_glider": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1039_flightgear_rascal": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1039_gazebo-classic_advanced_plane": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1040_gazebo-classic_standard_vtol": {
   "status": "checked",
@@ -380,8 +380,8 @@
   "findings": []
  },
  "init.d-posix/1044_gazebo-classic_plane_lidar": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1045_gazebo-classic_quadtailsitter": {
   "status": "unsupported",
@@ -396,12 +396,12 @@
   "ca_airframe": 9
  },
  "init.d-posix/17001_flightgear_tf-g1": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/17002_flightgear_tf-g2": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/2507_gazebo-classic_cloudship": {
   "status": "unsupported",
@@ -426,8 +426,8 @@
   "status": "no parameters"
  },
  "init.d-posix/4003_gz_rc_cessna": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/4004_gz_standard_vtol": {
   "status": "checked",
@@ -441,8 +441,8 @@
   "findings": []
  },
  "init.d-posix/4008_gz_advanced_plane": {
-  "status": "unsupported",
-  "ca_airframe": 1
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/4009_gz_r1_rover": {
   "status": "unsupported",
