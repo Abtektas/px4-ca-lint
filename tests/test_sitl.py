@@ -29,6 +29,9 @@ from px4_ca_lint.rules import AXES
 SITL_BUILD = os.environ.get("PX4_CA_SITL_BUILD")
 INSTANCE = os.environ.get("PX4_CA_SITL_INSTANCE", "7")
 START_TIMEOUT_S = 40
+# a PX4 client command normally returns within milliseconds
+CLIENT_TIMEOUT_S = 5
+CLIENT_ATTEMPTS = 3
 # `param show` prints four decimals and the matrix print five
 TOLERANCE = 2e-3
 
@@ -68,14 +71,27 @@ class Sitl:
             stdin=subprocess.DEVNULL,
         )
 
-    def command(self, name: str, *arguments: str, timeout: float = 20) -> subprocess.CompletedProcess:
-        return subprocess.run(
-            [str(self.bin / f"px4-{name}"), "--instance", INSTANCE, *arguments],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            check=False,
-        )
+    def command(
+        self, name: str, *arguments: str, timeout: float = CLIENT_TIMEOUT_S, attempts: int = CLIENT_ATTEMPTS
+    ) -> subprocess.CompletedProcess:
+        """Run a PX4 client command.
+
+        Now and then a client hangs although px4 is running and answers the next one, so a
+        command that times out is sent again. Every command used here can be repeated.
+        """
+        for attempt in range(1, attempts + 1):
+            try:
+                return subprocess.run(
+                    [str(self.bin / f"px4-{name}"), "--instance", INSTANCE, *arguments],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    check=False,
+                )
+
+            except subprocess.TimeoutExpired:
+                if attempt == attempts:
+                    raise
 
     def wait_until_running(self) -> None:
         deadline = time.monotonic() + START_TIMEOUT_S
@@ -85,7 +101,7 @@ class Sitl:
                 raise RuntimeError(f"px4 exited early:\n{self.log_path.read_text()[-2000:]}")
 
             try:
-                if "Running" in self.command("control_allocator", "status", timeout=3).stdout:
+                if "Running" in self.command("control_allocator", "status", timeout=3, attempts=1).stdout:
                     return
 
             except subprocess.TimeoutExpired:
