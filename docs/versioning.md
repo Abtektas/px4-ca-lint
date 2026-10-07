@@ -15,6 +15,7 @@ hand. Each release names the PX4 version of its prebuilt engines.
 | Tool | Date | PX4 of the prebuilt engines | `engine_schema` |
 |---|---|---|---|
 | 0.1.0 | 2026-10-02 | v1.17.0 | 1 |
+| 0.2.0 | 2026-10-07 | v1.17.0 | 1 |
 
 ## 2. The engine output (`engine_schema`)
 
@@ -38,10 +39,12 @@ version.
 
 | PX4 | Commit | Status | Checked on |
 |---|---|---|---|
-| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | target of the first release; all tests pass, including golden tests and SITL cross-check, on macOS arm64 and Linux arm64 | 2026-10-02 |
-| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, unit and end-to-end tests pass; no golden reports, no cross-check | 2026-10-02 |
+| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | target of the prebuilt engines; all tests pass, including golden tests and SITL cross-check, on macOS arm64 and Linux arm64 | 2026-10-02, macOS arm64 again on 2026-10-07 |
+| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, unit and end-to-end tests pass; no golden reports, no cross-check | 2026-10-07 |
 
-Both builds give identical matrices for the files in `examples/`.
+Both builds give identical matrices for the files in `examples/`, except
+`hexa_rotor_count_4.params`: the newer PX4 drops the yaw axis there and reports
+it, see [CA021](../rules/CA021.md).
 
 Known differences between PX4 versions that the engine handles:
 

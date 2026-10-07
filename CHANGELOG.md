@@ -3,12 +3,10 @@
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions are explained in [docs/versioning.md](docs/versioning.md).
 
-## Unreleased
+## 0.2.0 - 2026-10-07
 
-### Changed
-
-- The install instructions recommend `uv tool install`, with pipx and a
-  virtual environment as alternatives.
+Prebuilt engines contain the control allocation code of PX4 v1.17.0
+(`engine_schema` 1), as in 0.1.0.
 
 ### Added
 
@@ -24,6 +22,11 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 - `install check` workflow: follows the install steps, with uv and with a
   virtual environment, with the files of a published release on clean
   machines.
+
+### Changed
+
+- The install instructions recommend `uv tool install`, with pipx and a
+  virtual environment as alternatives.
 
 ## 0.1.0 - 2026-10-02
 

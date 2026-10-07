@@ -11,7 +11,7 @@ on:
       version:
         description: Release to check, without the leading v
         required: true
-        default: "0.1.0"
+        default: "0.2.0"
 
 permissions:
   contents: read
