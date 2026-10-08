@@ -1,0 +1,15 @@
+# A tailsitter VTOL with two motors and two elevons: the control allocation
+# parameters of PX4's airframe 13200_generic_vtol_tailsitter.
+CA_AIRFRAME 4
+CA_ROTOR_COUNT 2
+CA_ROTOR0_PY -0.2
+CA_ROTOR0_KM -0.05
+CA_ROTOR1_PY 0.2
+CA_ROTOR1_KM 0.05
+CA_SV_CS_COUNT 2
+CA_SV_CS0_TYPE 5
+CA_SV_CS0_TRQ_P 0.5
+CA_SV_CS0_TRQ_Y 0.5
+CA_SV_CS1_TYPE 6
+CA_SV_CS1_TRQ_P 0.5
+CA_SV_CS1_TRQ_Y -0.5

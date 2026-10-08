@@ -22,8 +22,11 @@
 #include <ControlAllocationSequentialDesaturation.hpp>
 
 #include "ActuatorEffectivenessFixedWing.hpp"
+#include "ActuatorEffectivenessMCTilt.hpp"
 #include "ActuatorEffectivenessMultirotor.hpp"
 #include "ActuatorEffectivenessStandardVTOL.hpp"
+#include "ActuatorEffectivenessTailsitterVTOL.hpp"
+#include "ActuatorEffectivenessTiltrotorVTOL.hpp"
 
 // Version of the JSON document written by this program. Increase it whenever a
 // field is removed or changes meaning.
@@ -172,6 +175,14 @@ int main(int argc, char **argv)
 	case 1: effectiveness = new ActuatorEffectivenessFixedWing(nullptr); break;
 
 	case 2: effectiveness = new ActuatorEffectivenessStandardVTOL(nullptr); break;
+
+	// The matrix below is the one of a configuration update, for which PX4 takes
+	// the tilt servos at their minimum angle. In flight PX4 updates it with the tilt.
+	case 3: effectiveness = new ActuatorEffectivenessTiltrotorVTOL(nullptr); break;
+
+	case 4: effectiveness = new ActuatorEffectivenessTailsitterVTOL(nullptr); break;
+
+	case 8: effectiveness = new ActuatorEffectivenessMCTilt(nullptr); break;
 
 	default:
 		fprintf(out, "  \"error\": \"unsupported CA_AIRFRAME\"\n}\n");

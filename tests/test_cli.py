@@ -117,6 +117,33 @@ class WithEngine(unittest.TestCase):
         self.assertAlmostEqual(mix[0]["thrust_x"], 1.509, places=3)
         self.assertAlmostEqual(mix[3]["thrust_x"], 0.491, places=3)
 
+    def test_tailsitter(self):
+        report = self.report("examples/tailsitter.params")
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})
+        self.assertEqual(report["airframe"]["name"], "VTOL Tailsitter")
+        actuators = [matrix["actuators"] for matrix in report["matrices"]]
+        self.assertEqual(actuators, [["motor0", "motor1"], ["servo0", "servo1"]])
+
+    def test_tiltrotor(self):
+        report = self.report("examples/tiltrotor.params")
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})
+        self.assertEqual(report["airframe"]["name"], "VTOL Tiltrotor")
+        # the tilt servos come after the control surfaces and are in the matrix of the motors
+        self.assertEqual(report["matrices"][0]["actuators"][4:], ["servo4", "servo5"])
+        self.assertEqual(report["matrices"][1]["actuators"], ["servo0", "servo1", "servo2", "servo3"])
+        self.assertEqual([round(row["yaw"], 3) for row in report["matrices"][0]["mix"]], [0, 0, 0, 0, 1, -1])
+        self.assertIn("tiltrotor: matrix 0", report["notes"][-1])
+
+    def test_multirotor_with_tilt(self):
+        report = self.report("examples/tricopter_tilt.params")
+        self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})
+        self.assertEqual(report["airframe"]["name"], "MC Tilt")
+        matrix = report["matrices"][0]
+        self.assertEqual(matrix["actuators"], ["motor0", "motor1", "motor2", "servo0"])
+        # yaw comes from the tilt servo alone
+        self.assertEqual([round(row["yaw"], 3) for row in matrix["mix"]], [0, 0, 0, -1])
+        self.assertEqual(report["notes"], [])
+
     def test_exit_codes(self):
         warnings = "examples/standard_vtol_pusher_offset.params"
         self.assertEqual(run("--engine", ENGINE, warnings)[0], 0)
@@ -149,7 +176,7 @@ class WithEngine(unittest.TestCase):
 
     def test_unsupported_airframe(self):
         path = Path(os.environ.get("TMPDIR", "/tmp")) / "px4-ca-lint-test-unsupported.params"
-        path.write_text("CA_AIRFRAME 3\n")
+        path.write_text("CA_AIRFRAME 5\n")
         self.addCleanup(path.unlink)
         code, _, stderr = run("--engine", ENGINE, str(path))
         self.assertEqual(code, 2)

@@ -10,8 +10,8 @@ resulting matrices and likely configuration mistakes. No vehicle and no
 simulator are needed.
 
 It is meant for people who set `CA_*` parameters by hand: custom multirotor
-geometries, planes and standard VTOLs. This is an early version; the rules and
-the output format can still change.
+geometries, planes, and standard, tiltrotor and tailsitter VTOLs. This is an
+early version; the rules and the output format can still change.
 
 ## Safety and liability
 
@@ -154,8 +154,14 @@ script, files it sources (such as `rc.fw_defaults`) are read when the script is
 inside a PX4 `ROMFS` directory; `if` blocks are not evaluated. The report says
 so when either applies.
 
-Supported `CA_AIRFRAME` values: 0 (multirotor), 1 (fixed-wing) and 2 (standard
-VTOL). Other values give an error, not a report.
+Supported `CA_AIRFRAME` values: 0 (multirotor), 1 (fixed-wing), 2 (standard
+VTOL), 3 (tiltrotor VTOL), 4 (tailsitter VTOL) and 8 (multirotor with tilt).
+Other values give an error, not a report.
+
+For a tiltrotor the matrix of the motors depends on the tilt angle. The report
+shows the one PX4 computes after a parameter change, with the tilt servos at
+their minimum angle (`CA_SV_TLn_MINA`), the hover position. The matrices PX4
+uses during the transition and in forward flight are not covered.
 
 The report shows what goes through the matrices. Control surface trim, flaps
 and spoilers (`CA_SV_CSn_TRIM`, `_FLAP`, `_SPOIL`) are applied by PX4 outside
@@ -212,7 +218,9 @@ Tests whose requirements are missing are skipped. See the comments at the top
 of `tests/test_golden.py` and `tests/test_sitl.py` for the environment
 variables. `control_allocator status` does not print the mix matrix, so the
 cross-check compares the effectiveness matrices only; the mix matrix comes from
-the same PX4 class in both cases.
+the same PX4 class in both cases. PX4 has no SIH airframe with tilt servos, so
+for the tiltrotor and the multirotor with tilt the parameters of an example are
+set on a running SIH quadrotor.
 
 After every release, the `install check` workflow follows the install steps
 above, with uv and with a virtual environment, on clean Linux x86_64, Linux

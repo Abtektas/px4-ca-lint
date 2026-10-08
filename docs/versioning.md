@@ -39,8 +39,8 @@ version.
 
 | PX4 | Commit | Status | Checked on |
 |---|---|---|---|
-| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | target of the prebuilt engines; all tests pass, including golden tests and SITL cross-check, on macOS arm64 and Linux arm64 | 2026-10-02, macOS arm64 again on 2026-10-07 |
-| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, unit and end-to-end tests pass; no golden reports, no cross-check | 2026-10-07 |
+| `v1.17.0` (latest stable release, 2026-05-13) | `d6f12ad1c4` | target of the prebuilt engines; all tests pass, including golden tests and SITL cross-check, on macOS arm64 and Linux arm64 | 2026-10-02, macOS arm64 again on 2026-10-08 |
+| `v1.18.0-beta1-934-g8c243a2cd6` (main) | `8c243a2cd6` | builds, unit and end-to-end tests pass; no golden reports, no cross-check | 2026-10-08 |
 
 Both builds give identical matrices for the files in `examples/`, except
 `hexa_rotor_count_4.params`: the newer PX4 drops the yaw axis there and reports
@@ -52,7 +52,8 @@ Known differences between PX4 versions that the engine handles:
   build detects this and writes `null`.
 
 Supported `CA_AIRFRAME` values so far: 0 (multirotor), 1 (fixed-wing, since tool
-0.2.0), 2 (standard VTOL).
+0.2.0), 2 (standard VTOL), and since tool 0.3.0: 3 (tiltrotor VTOL), 4
+(tailsitter VTOL) and 8 (multirotor with tilt).
 
 ## Python
 

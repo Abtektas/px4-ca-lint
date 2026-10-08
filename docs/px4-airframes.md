@@ -9,8 +9,8 @@ release. The reports are stored in `tests/golden/<PX4 version>/`, and
 
 | Status | Scripts |
 |---|---|
-| checked | 80 |
-| unsupported `CA_AIRFRAME` | 34 |
+| checked | 91 |
+| unsupported `CA_AIRFRAME` | 23 |
 | no parameters in the script | 16 |
 | no `CA_*` parameters | 1 |
 
@@ -18,12 +18,9 @@ Unsupported scripts by `CA_AIRFRAME` value:
 
 | `CA_AIRFRAME` | Scripts |
 |---|---|
-| 3 (tiltrotor VTOL) | 4 |
-| 4 (tailsitter VTOL) | 6 |
 | 5 (rover (Ackermann)) | 6 |
 | 6 (rover (differential)) | 4 |
 | 7 (motors (6DOF)) | 6 |
-| 8 (multirotor with tilt) | 1 |
 | 9 (custom) | 3 |
 | 10 (helicopter (tail ESC)) | 1 |
 | 13 (rover (mecanum)) | 1 |
@@ -31,8 +28,9 @@ Unsupported scripts by `CA_AIRFRAME` value:
 
 ### Findings
 
-77 of the 80 checked scripts have no findings: 48 multirotors, 23 planes and 6
-standard VTOLs. Three have findings, all about `CA_ROTOR_COUNT`:
+88 of the 91 checked scripts have no findings: 48 multirotors, 23 planes, 6
+standard VTOLs, 4 tiltrotor VTOLs, 6 tailsitter VTOLs and 1 multirotor with
+tilt. Three have findings, all about `CA_ROTOR_COUNT`:
 
 | Script | Findings | Explanation |
 |---|---|---|

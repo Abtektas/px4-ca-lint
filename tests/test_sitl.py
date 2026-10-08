@@ -26,6 +26,7 @@ import unittest
 from pathlib import Path
 
 from px4_ca_lint.engine import find_engine, run_engine
+from px4_ca_lint.params import parse_file
 from px4_ca_lint.rules import AXES
 
 SITL_BUILD = os.environ.get("PX4_CA_SITL_BUILD")
@@ -39,6 +40,7 @@ TOLERANCE = 2e-3
 
 _PARAM = re.compile(r"^\S\s+\S?\s*(CA_\w+) \[\d+,\d+\] : (\S+)")
 _ROW = re.compile(r"^\s*\d+\|(.*)$")
+_SOURCE = re.compile(r"Effectiveness Source: (.+)$", re.MULTILINE)
 
 
 def parse_matrices(text: str) -> list[list[list[float]]]:
@@ -64,6 +66,7 @@ class Sitl:
         self.directory = tempfile.TemporaryDirectory(prefix="px4-ca-lint-sitl-")
         self.log_path = Path(self.directory.name) / "px4.log"
         self.log = open(self.log_path, "w")
+        self.status = ""
         self.process = subprocess.Popen(
             [str(self.bin / "px4"), "-i", INSTANCE, "-d", str(build / "etc")],
             cwd=self.directory.name,
@@ -162,11 +165,19 @@ class Sitl:
         The matrices go to the stdout of the px4 process, which is only written
         to the log file completely when the process exits.
         """
-        self.command("control_allocator", "status")
+        self.status = self.command("control_allocator", "status").stdout
         self.stop()
         blocks = parse_matrices(self.log_path.read_text())
         # every allocation instance prints Effectiveness.T, minimum and maximum
         return blocks[len(blocks) - 3 * count :: 3] if len(blocks) >= 3 * count else []
+
+    def effectiveness_source(self) -> str | None:
+        """The name of the effectiveness class in the status read by final_effectiveness().
+
+        Unlike the matrices, this line goes to the client that asked for the status.
+        """
+        match = _SOURCE.search(self.status)
+        return match.group(1).strip() if match else None
 
     def cleanup(self) -> None:
         self.stop()
@@ -249,6 +260,7 @@ class CrossCheck(unittest.TestCase):
 
         from_engine = run_engine(find_engine(), parameters)
         from_sitl = sitl.final_effectiveness(len(from_engine["matrices"]))
+        self.assertEqual(sitl.effectiveness_source(), from_engine["effectiveness_source"])
         self.assertEqual(len(from_sitl), len(from_engine["matrices"]))
 
         for sitl_matrix, engine_matrix in zip(from_sitl, from_engine["matrices"]):
@@ -286,6 +298,24 @@ class CrossCheck(unittest.TestCase):
     def test_standard_vtol_pusher_offset(self):
         result = self.compare(10043, {"CA_ROTOR4_PZ": "-0.05"})
         self.assertAlmostEqual(result["matrices"][0]["effectiveness"]["pitch"][4], -0.325, places=3)
+
+    def test_tailsitter(self):
+        result = self.compare(10042)
+        self.assertEqual(result["effectiveness_source"], "VTOL Tailsitter")
+        self.assertEqual((result["num_motors"], result["num_servos"]), (2, 2))
+
+    # PX4 has no SIH airframe with tilt servos. PX4 changes the effectiveness class when
+    # CA_AIRFRAME changes, so the parameters of an example are set on the SIH quadrotor.
+
+    def test_tiltrotor(self):
+        result = self.compare(10040, parse_file("examples/tiltrotor.params").params)
+        self.assertEqual(result["effectiveness_source"], "VTOL Tiltrotor")
+        self.assertEqual((result["num_motors"], result["num_servos"]), (4, 6))
+
+    def test_multirotor_with_tilt(self):
+        result = self.compare(10040, parse_file("examples/tricopter_tilt.params").params)
+        self.assertEqual(result["effectiveness_source"], "MC Tilt")
+        self.assertEqual((result["num_motors"], result["num_servos"]), (3, 1))
 
     def test_weak_yaw_row_is_zeroed(self):
         weak = {f"CA_ROTOR{index}_KM": sign + "0.005" for index, sign in enumerate(("", "", "-", "-"))}

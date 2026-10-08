@@ -22,8 +22,8 @@
   "findings": []
  },
  "init.d/1102_tailsitter_duo_sih.hil": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d/1103_standard_vtol_sih.hil": {
   "status": "checked",
@@ -42,20 +42,20 @@
   "findings": []
  },
  "init.d/13030_generic_vtol_quad_tiltrotor": {
-  "status": "unsupported",
-  "ca_airframe": 3
+  "status": "checked",
+  "findings": []
  },
  "init.d/13100_generic_vtol_tiltrotor": {
-  "status": "unsupported",
-  "ca_airframe": 3
+  "status": "checked",
+  "findings": []
  },
  "init.d/13200_generic_vtol_tailsitter": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d/14001_generic_mc_with_tilt": {
-  "status": "unsupported",
-  "ca_airframe": 8
+  "status": "checked",
+  "findings": []
  },
  "init.d/16001_helicopter": {
   "status": "unsupported",
@@ -257,8 +257,8 @@
   "findings": []
  },
  "init.d-posix/10042_sihsim_xvert": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/10043_sihsim_standard_vtol": {
   "status": "checked",
@@ -368,12 +368,12 @@
   "findings": []
  },
  "init.d-posix/1041_gazebo-classic_tailsitter": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1042_gazebo-classic_tiltrotor": {
-  "status": "unsupported",
-  "ca_airframe": 3
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1043_gazebo-classic_standard_vtol_drop": {
   "status": "checked",
@@ -384,8 +384,8 @@
   "findings": []
  },
  "init.d-posix/1045_gazebo-classic_quadtailsitter": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/1062_flightgear_tf-r1": {
   "status": "unsupported",
@@ -468,16 +468,16 @@
   "status": "no parameters"
  },
  "init.d-posix/4018_gz_quadtailsitter": {
-  "status": "unsupported",
-  "ca_airframe": 4
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/4019_gz_x500_gimbal": {
   "status": "checked",
   "findings": []
  },
  "init.d-posix/4020_gz_tiltrotor": {
-  "status": "unsupported",
-  "ca_airframe": 3
+  "status": "checked",
+  "findings": []
  },
  "init.d-posix/4021_gz_x500_flow": {
   "status": "checked",

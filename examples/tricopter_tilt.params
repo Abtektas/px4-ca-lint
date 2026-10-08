@@ -1,0 +1,15 @@
+# A tricopter whose rear motor is tilted sideways by a servo for yaw: the control
+# allocation parameters of PX4's airframe 14001_generic_mc_with_tilt.
+CA_AIRFRAME 8
+CA_ROTOR_COUNT 3
+CA_ROTOR0_PX 0.25
+CA_ROTOR0_PY 0.433
+CA_ROTOR1_PX 0.25
+CA_ROTOR1_PY -0.43
+CA_ROTOR2_PX -0.5
+CA_ROTOR2_PY 0
+CA_ROTOR2_TILT 1
+CA_SV_TL_COUNT 1
+CA_SV_TL0_MINA -45
+CA_SV_TL0_MAXA 45
+CA_SV_TL0_TD 90

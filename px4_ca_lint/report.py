@@ -56,6 +56,18 @@ def _unknown_parameter_notes(engine_result: dict) -> list[str]:
     return [f"{len(unknown)} parameter(s) do not exist in PX4 {version} and were ignored: {listed}{suffix}"]
 
 
+def _airframe_notes(engine_result: dict) -> list[str]:
+    # CA_AIRFRAME 3, tiltrotor VTOL: ActuatorEffectivenessTiltrotorVTOL::getEffectivenessMatrix()
+    if engine_result.get("ca_airframe") == 3 and engine_result.get("matrices"):
+        return [
+            "tiltrotor: matrix 0 is the one PX4 computes after a parameter change, with the tilt "
+            "servos at their minimum angle (CA_SV_TLn_MINA), which is the hover position; in flight PX4 "
+            "recomputes it with the tilt angle, which this report does not cover"
+        ]
+
+    return []
+
+
 def build_report(param_file: ParamFile, engine_result: dict, checked: Result) -> dict:
     matrices = []
 
@@ -90,7 +102,7 @@ def build_report(param_file: ParamFile, engine_result: dict, checked: Result) ->
             "num_motors": engine_result.get("num_motors", 0),
             "num_servos": engine_result.get("num_servos", 0),
         },
-        "notes": param_file.notes + _unknown_parameter_notes(engine_result),
+        "notes": param_file.notes + _unknown_parameter_notes(engine_result) + _airframe_notes(engine_result),
         "summary": {"errors": checked.count(ERROR), "warnings": checked.count(WARNING)},
         "findings": [{**finding.as_dict(), "url": rule_url(finding.rule)} for finding in checked.findings],
         "rules_not_checked": checked.not_checked,
@@ -186,7 +198,8 @@ def render_text(report: dict) -> str:
 
     lines += [
         "",
-        "motorN is configured by CA_ROTORN_*. Servos are numbered as in PX4, starting at 0.",
+        "motorN is configured by CA_ROTORN_*. Servos are numbered as in PX4, starting at 0:",
+        "control surfaces (CA_SV_CSn_*) first, then tilt servos (CA_SV_TLn_*).",
         "Authority is the sum of the absolute effectiveness values on that axis.",
         "",
         report["disclaimer"],

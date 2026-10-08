@@ -1,0 +1,127 @@
+{
+ "status": "checked",
+ "airframe": {
+  "ca_airframe": 8,
+  "name": "MC Tilt",
+  "num_motors": 3,
+  "num_servos": 1
+ },
+ "findings": [],
+ "matrices": [
+  {
+   "index": 0,
+   "method": "sequential_desaturation",
+   "normalize_rpy": true,
+   "actuators": [
+    "motor0",
+    "motor1",
+    "motor2",
+    "servo0"
+   ],
+   "axes": [
+    {
+     "axis": "roll",
+     "status": "controlled",
+     "authority": 5.6095
+    },
+    {
+     "axis": "pitch",
+     "status": "controlled",
+     "authority": 6.5
+    },
+    {
+     "axis": "yaw",
+     "status": "controlled",
+     "authority": 1
+    },
+    {
+     "axis": "thrust_x",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_y",
+     "status": "not controlled",
+     "authority": 0
+    },
+    {
+     "axis": "thrust_z",
+     "status": "controlled",
+     "authority": 19.5
+    }
+   ],
+   "effectiveness": {
+    "roll": [
+     -2.8145,
+     2.795,
+     0,
+     0
+    ],
+    "pitch": [
+     1.625,
+     1.625,
+     -3.25,
+     0
+    ],
+    "yaw": [
+     0,
+     0,
+     0,
+     -1
+    ],
+    "thrust_x": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "thrust_y": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "thrust_z": [
+     -6.5,
+     -6.5,
+     -6.5,
+     0
+    ]
+   },
+   "mix": [
+    {
+     "roll": -0.7071,
+     "pitch": 0.4054,
+     "yaw": 0,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -0.9965
+    },
+    {
+     "roll": 0.7071,
+     "pitch": 0.4082,
+     "yaw": 0,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1.0035
+    },
+    {
+     "roll": 0,
+     "pitch": -0.8136,
+     "yaw": 0,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": -1.0
+    },
+    {
+     "roll": 0,
+     "pitch": 0,
+     "yaw": -1,
+     "thrust_x": 0,
+     "thrust_y": 0,
+     "thrust_z": 0
+    }
+   ]
+  }
+ ]
+}

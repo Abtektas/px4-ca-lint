@@ -1,0 +1,29 @@
+# A tiltrotor VTOL with four motors, of which the two front ones tilt, and four
+# control surfaces: the control allocation parameters of PX4's airframe
+# 13100_generic_vtol_tiltrotor.
+CA_AIRFRAME 3
+CA_ROTOR_COUNT 4
+CA_ROTOR0_PX 1
+CA_ROTOR0_PY 1
+CA_ROTOR0_TILT 2
+CA_ROTOR1_PX -1
+CA_ROTOR1_PY -1
+CA_ROTOR2_PX 1
+CA_ROTOR2_PY -1
+CA_ROTOR2_KM -0.05
+CA_ROTOR2_TILT 1
+CA_ROTOR3_PX -1
+CA_ROTOR3_PY 1
+CA_ROTOR3_KM -0.05
+CA_SV_TL_COUNT 2
+CA_SV_CS_COUNT 4
+CA_SV_CS0_TYPE 1
+CA_SV_CS0_TRQ_R -0.5
+CA_SV_CS1_TYPE 2
+CA_SV_CS1_TRQ_R 0.5
+CA_SV_CS2_TYPE 7
+CA_SV_CS2_TRQ_P 0.5
+CA_SV_CS2_TRQ_Y 0.5
+CA_SV_CS3_TYPE 8
+CA_SV_CS3_TRQ_P 0.5
+CA_SV_CS3_TRQ_Y -0.5

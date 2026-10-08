@@ -5,6 +5,27 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
 
 ## Unreleased
 
+### Added
+
+- Tiltrotor VTOLs (`CA_AIRFRAME` 3), tailsitter VTOLs (`CA_AIRFRAME` 4) and
+  multirotors with tilt (`CA_AIRFRAME` 8). The golden tests now cover 11 more
+  airframe scripts of PX4 v1.17.0, 91 in total, and the SITL cross-check
+  includes the three types. New examples `examples/tailsitter.params`,
+  `examples/tiltrotor.params` and `examples/tricopter_tilt.params`. An engine
+  built from this version is needed; the prebuilt engines of 0.2.0 report these
+  airframes as not supported.
+- For a tiltrotor the report shows the matrices PX4 computes after a parameter
+  change, with the tilt servos in the hover position, and says so in a note.
+  The matrices PX4 uses during the transition and in forward flight are not
+  covered.
+
+### Changed
+
+- The text report says in which order servos are numbered: control surfaces
+  first, then tilt servos.
+- The SITL cross-check also compares the name of the effectiveness class PX4
+  reports with the one the engine used.
+
 ## 0.2.0 - 2026-10-07
 
 Prebuilt engines contain the control allocation code of PX4 v1.17.0

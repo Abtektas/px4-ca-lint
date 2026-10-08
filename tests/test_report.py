@@ -80,6 +80,14 @@ class Report(unittest.TestCase):
         self.assertEqual(len(notes), 1)
         self.assertIn("CA_GONE, AAA_OLD", notes[0])
 
+    def test_tiltrotor_note(self):
+        result = engine_result()
+        self.assertEqual(build_report(param_file(), result)["notes"], [])
+        result["ca_airframe"] = 3
+        notes = build_report(param_file(), result)["notes"]
+        self.assertEqual(len(notes), 1)
+        self.assertIn("CA_SV_TLn_MINA", notes[0])
+
     def test_findings_are_in_both_formats(self):
         report = build_report(param_file(), engine_result(weak_axes_zeroed=["yaw"]))
         self.assertEqual(report["summary"], {"errors": 0, "warnings": 1})
