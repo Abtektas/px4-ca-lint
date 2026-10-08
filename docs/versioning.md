@@ -16,6 +16,7 @@ hand. Each release names the PX4 version of its prebuilt engines.
 |---|---|---|---|
 | 0.1.0 | 2026-10-02 | v1.17.0 | 1 |
 | 0.2.0 | 2026-10-07 | v1.17.0 | 1 |
+| 0.3.0 | 2026-10-08 | v1.17.0 | 1 |
 
 ## 2. The engine output (`engine_schema`)
 

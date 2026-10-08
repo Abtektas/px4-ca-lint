@@ -47,9 +47,9 @@ $ px4-ca-lint examples/standard_vtol_pusher_offset.params
 ...
 Findings
   warning CA010 matrix 0: motor4: thrust_x gain up to 4.00 (limit 2); the output saturates at a thrust_x setpoint of 0.25
-      thrust gain above the limit: https://github.com/Abtektas/px4-ca-lint/blob/v0.2.0/rules/CA010.md
+      thrust gain above the limit: https://github.com/Abtektas/px4-ca-lint/blob/v0.3.0/rules/CA010.md
   warning CA011 matrix 0: motor0, motor1, motor2, motor3: commanded by the thrust_x setpoint without producing thrust_x thrust; a thrust_x setpoint changes their output
-      thrust command to an actuator that produces no thrust on that axis: https://github.com/Abtektas/px4-ca-lint/blob/v0.2.0/rules/CA011.md
+      thrust command to an actuator that produces no thrust on that axis: https://github.com/Abtektas/px4-ca-lint/blob/v0.3.0/rules/CA011.md
   CA002 was not checked: this PX4 version does not report dropped axes
   0 error(s), 2 warning(s)
 ```
@@ -61,13 +61,13 @@ findings.
 
 You need the Python package and the engine for your platform. The tool needs
 Python 3.11 or newer and has no Python dependencies. The commands below install
-release 0.2.0.
+release 0.3.0.
 
 1. The Python package. With [uv](https://docs.astral.sh/uv/), which also
    provides a suitable Python if the system one is too old:
 
    ```
-   uv tool install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.2.0/px4_ca_lint-0.2.0-py3-none-any.whl
+   uv tool install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.3.0/px4_ca_lint-0.3.0-py3-none-any.whl
    ```
 
    Without uv, use [pipx](https://pipx.pypa.io/) with the same URL
@@ -76,7 +76,7 @@ release 0.2.0.
 
    ```
    python3 -m venv ~/.venvs/px4-ca-lint
-   ~/.venvs/px4-ca-lint/bin/pip install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.2.0/px4_ca_lint-0.2.0-py3-none-any.whl
+   ~/.venvs/px4-ca-lint/bin/pip install https://github.com/Abtektas/px4-ca-lint/releases/download/v0.3.0/px4_ca_lint-0.3.0-py3-none-any.whl
    export PATH="$HOME/.venvs/px4-ca-lint/bin:$PATH"
    ```
 
@@ -85,7 +85,7 @@ release 0.2.0.
    ```
    PLATFORM=linux-x86_64
    NAME=px4_ca_engine-px4-v1.17.0-schema1-$PLATFORM
-   BASE=https://github.com/Abtektas/px4-ca-lint/releases/download/v0.2.0
+   BASE=https://github.com/Abtektas/px4-ca-lint/releases/download/v0.3.0
    curl -LO $BASE/$NAME.tar.gz
    curl -LO $BASE/SHA256SUMS
    shasum -a 256 --ignore-missing -c SHA256SUMS
