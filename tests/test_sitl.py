@@ -15,8 +15,10 @@ Needs a PX4 SITL build and an engine built from the same PX4 version:
         python3 -m unittest tests.test_sitl
 """
 
+import contextlib
 import os
 import re
+import signal
 import subprocess
 import tempfile
 import time
@@ -69,6 +71,8 @@ class Sitl:
             stdout=self.log,
             stderr=subprocess.STDOUT,
             stdin=subprocess.DEVNULL,
+            # its own process group, so that stop() reaches everything px4 started
+            start_new_session=True,
         )
 
     def command(
@@ -130,17 +134,27 @@ class Sitl:
         return parameters
 
     def stop(self) -> None:
-        if self.process.poll() is None:
-            self.command("shutdown")
+        if self.log.closed:
+            return
 
-            try:
-                self.process.wait(timeout=10)
+        try:
+            if self.process.poll() is None:
+                self.command("shutdown")
 
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait()
+                try:
+                    self.process.wait(timeout=10)
 
-        self.log.close()
+                except subprocess.TimeoutExpired:
+                    # killed with its group below
+                    pass
+
+        finally:
+            # px4 runs the startup script in a shell; the shell and a client that hangs in it outlive px4
+            with contextlib.suppress(ProcessLookupError):
+                os.killpg(self.process.pid, signal.SIGKILL)
+
+            self.process.wait()
+            self.log.close()
 
     def final_effectiveness(self, count: int) -> list[list[list[float]]]:
         """Stop PX4 and return the effectiveness matrices of its last status, as [actuator][axis].
@@ -170,6 +184,41 @@ class ParseMatrices(unittest.TestCase):
             " 0| 1.00000  1.00000 \n"
         )
         self.assertEqual(parse_matrices(text), [[[-1.3, 0.0], [1.3, -6.5]], [[1.0, 1.0]]])
+
+
+def is_running(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+
+    except ProcessLookupError:
+        return False
+
+    return True
+
+
+class Stop(unittest.TestCase):
+    def test_processes_started_by_px4_are_stopped(self):
+        # a script in place of px4: its child outlives it, like a client that hangs in the startup script
+        build = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        (build / "bin").mkdir()
+        px4 = build / "bin" / "px4"
+        px4.write_text("#!/bin/sh\nsleep 300 &\necho $! > child.pid\n")
+        px4.chmod(0o755)
+
+        sitl = Sitl(build, 0)
+        self.addCleanup(sitl.cleanup)
+        sitl.process.wait(timeout=10)
+        child = int((Path(sitl.directory.name) / "child.pid").read_text())
+        self.addCleanup(lambda: is_running(child) and os.kill(child, signal.SIGKILL))
+        self.assertTrue(is_running(child))
+
+        sitl.stop()
+        deadline = time.monotonic() + 5
+
+        while is_running(child) and time.monotonic() < deadline:
+            time.sleep(0.05)
+
+        self.assertFalse(is_running(child))
 
 
 @unittest.skipIf(SITL_BUILD is None, "PX4_CA_SITL_BUILD is not set")
