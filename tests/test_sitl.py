@@ -186,39 +186,47 @@ class ParseMatrices(unittest.TestCase):
         self.assertEqual(parse_matrices(text), [[[-1.3, 0.0], [1.3, -6.5]], [[1.0, 1.0]]])
 
 
-def is_running(pid: int) -> bool:
+def has_writer(fifo: int) -> bool:
+    """Whether a process holds the other end of the FIFO, to which nothing is ever written."""
     try:
-        os.kill(pid, 0)
+        return os.read(fifo, 1) != b""
 
-    except ProcessLookupError:
-        return False
+    except BlockingIOError:
+        return True
 
-    return True
+
+def wait_for(condition, timeout: float = 5) -> bool:
+    deadline = time.monotonic() + timeout
+
+    while not condition() and time.monotonic() < deadline:
+        time.sleep(0.05)
+
+    return condition()
 
 
 class Stop(unittest.TestCase):
     def test_processes_started_by_px4_are_stopped(self):
-        # a script in place of px4: its child outlives it, like a client that hangs in the startup script
+        # A script in place of px4: its child outlives it, like a client that hangs in the startup script.
+        # The child holds a FIFO open, which shows whether it is alive. Its PID does not: where nothing
+        # reaps orphans, as in a container, a killed process keeps its PID.
         build = Path(self.enterContext(tempfile.TemporaryDirectory()))
         (build / "bin").mkdir()
+        os.mkfifo(build / "alive")
+        fifo = os.open(build / "alive", os.O_RDONLY | os.O_NONBLOCK)
+        self.addCleanup(os.close, fifo)
         px4 = build / "bin" / "px4"
-        px4.write_text("#!/bin/sh\nsleep 300 &\necho $! > child.pid\n")
+        px4.write_text(f'#!/bin/sh\nsleep 300 > "{build}/alive" &\necho $! > child.pid\n')
         px4.chmod(0o755)
 
         sitl = Sitl(build, 0)
         self.addCleanup(sitl.cleanup)
         sitl.process.wait(timeout=10)
+        self.assertTrue(wait_for(lambda: has_writer(fifo)))
         child = int((Path(sitl.directory.name) / "child.pid").read_text())
-        self.addCleanup(lambda: is_running(child) and os.kill(child, signal.SIGKILL))
-        self.assertTrue(is_running(child))
+        self.addCleanup(lambda: has_writer(fifo) and os.kill(child, signal.SIGKILL))
 
         sitl.stop()
-        deadline = time.monotonic() + 5
-
-        while is_running(child) and time.monotonic() < deadline:
-            time.sleep(0.05)
-
-        self.assertFalse(is_running(child))
+        self.assertTrue(wait_for(lambda: not has_writer(fifo)))
 
 
 @unittest.skipIf(SITL_BUILD is None, "PX4_CA_SITL_BUILD is not set")
