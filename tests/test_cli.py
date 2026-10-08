@@ -134,6 +134,12 @@ class WithEngine(unittest.TestCase):
         self.assertEqual([round(row["yaw"], 3) for row in report["matrices"][0]["mix"]], [0, 0, 0, 0, 1, -1])
         self.assertIn("tiltrotor: matrix 0", report["notes"][-1])
 
+    def test_tiltrotor_tilt_servo_missing(self):
+        report = self.report("examples/tiltrotor_tilt_servo_missing.params")
+        self.assertEqual([finding["rule"] for finding in report["findings"]], ["CA022"])
+        self.assertEqual(report["findings"][0]["actuators"], ["motor0"])
+        self.assertEqual(report["airframe"]["num_servos"], 5)
+
     def test_multirotor_with_tilt(self):
         report = self.report("examples/tricopter_tilt.params")
         self.assertEqual(report["summary"], {"errors": 0, "warnings": 0})

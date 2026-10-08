@@ -169,6 +169,43 @@ class Rules(unittest.TestCase):
     def test_ca021_needs_the_input_parameters(self):
         self.assertEqual(rules(check(engine_result(matrix({}, []), num_motors=0))), ["CA001"])
 
+    def test_ca022_tilt_servo_does_not_exist(self):
+        tiltrotor = engine_result(healthy(), ca_airframe=3)
+        params = {"CA_SV_TL_COUNT": "1", "CA_ROTOR0_TILT": "2", "CA_ROTOR1_TILT": "1"}
+        result = check(tiltrotor, params=params)
+        self.assertEqual(rules(result), ["CA022"])
+        self.assertEqual(result.findings[0].level, "warning")
+        self.assertEqual(result.findings[0].actuators, ["motor0"])
+        self.assertIn(
+            "motor0: CA_ROTOR0_TILT is 2, but CA_SV_TL_COUNT is 1; PX4 treats the rotor as not tilting",
+            result.findings[0].message,
+        )
+
+    def test_ca022_count_not_set(self):
+        tilted = engine_result(healthy(), ca_airframe=8)
+        result = check(tilted, params={"CA_ROTOR0_TILT": "1", "CA_ROTOR1_TILT": "1.0"})
+        self.assertEqual(rules(result), ["CA022"])
+        self.assertEqual(result.findings[0].actuators, ["motor0", "motor1"])
+        self.assertIn(
+            "CA_SV_TL_COUNT is 0 (not set in the input); PX4 treats these rotors", result.findings[0].message
+        )
+
+    def test_ca022_accepts_existing_servos_and_rotors_without_one(self):
+        tiltrotor = engine_result(healthy(), ca_airframe=3)
+        params = {"CA_SV_TL_COUNT": "2", "CA_ROTOR0_TILT": "2", "CA_ROTOR1_TILT": "0"}
+        self.assertEqual(rules(check(tiltrotor, params=params)), [])
+        # rotor 2 is not counted, which is CA021
+        params = {"CA_SV_TL_COUNT": "1", "CA_ROTOR0_TILT": "1", "CA_ROTOR2_TILT": "3"}
+        self.assertEqual(rules(check(tiltrotor, params=params)), ["CA021"])
+
+    def test_ca022_only_where_px4_reads_the_tilt_assignment(self):
+        params = {"CA_ROTOR0_TILT": "2"}
+
+        for airframe in (0, 1, 2, 4):
+            self.assertEqual(rules(check(engine_result(healthy(), ca_airframe=airframe), params=params)), [])
+
+        self.assertEqual(rules(check(engine_result(healthy(), ca_airframe=3))), [])
+
     def test_ignore(self):
         result = check(
             engine_result(matrix({}, [{}], weak_axes_zeroed=["yaw"], dropped_axes_bitmask=None)),

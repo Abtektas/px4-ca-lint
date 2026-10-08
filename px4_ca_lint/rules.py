@@ -22,6 +22,8 @@ _EFFECTIVENESS_ZERO = 1e-6
 # CA021: the rotor parameters whose PX4 default is zero. A rotor with one of them set is
 # taken as configured on purpose; thrust and moment coefficients have non-zero defaults.
 _ROTOR_GEOMETRY = re.compile(r"^CA_ROTOR(\d+)_(?:PX|PY|PZ|AX|AY|TILT)$")
+# CA022: the CA_AIRFRAME values for which PX4 reads CA_ROTORn_TILT (tiltrotor VTOL, multirotor with tilt)
+_TILT_AIRFRAMES = (3, 8)
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,7 @@ RULES = {
         Rule("CA011", WARNING, "thrust command to an actuator that produces no thrust on that axis"),
         Rule("CA020", WARNING, "a motor is not used for roll or pitch"),
         Rule("CA021", WARNING, "a rotor is configured but not counted by CA_ROTOR_COUNT"),
+        Rule("CA022", WARNING, "a rotor is assigned to a tilt servo that does not exist"),
     )
 }
 
@@ -257,6 +260,47 @@ def _check_uncounted_rotors(engine_result: dict, params: dict[str, str], result:
     )
 
 
+def _integer(params: dict[str, str], name: str) -> int:
+    """An integer parameter of the input; 0, the PX4 default of the ones read here, when it is not set."""
+    try:
+        return int(float(params[name]))
+
+    except (KeyError, ValueError):
+        return 0
+
+
+def _check_tilt_servos(engine_result: dict, params: dict[str, str], result: Result) -> None:
+    if engine_result.get("ca_airframe") not in _TILT_AIRFRAMES:
+        return
+
+    count = _rotor_count(engine_result, params)
+
+    if count is None:
+        return
+
+    tilts = _integer(params, "CA_SV_TL_COUNT")
+    # CA_ROTORn_TILT is 0 for no tilt servo, else the number of the servo, starting at 1
+    missing = [
+        (index, tilt) for index in range(count) if (tilt := _integer(params, f"CA_ROTOR{index}_TILT")) > tilts
+    ]
+
+    if not missing:
+        return
+
+    labels = [f"motor{index}" for index, _ in missing]
+    assigned = _join([f"CA_ROTOR{index}_TILT is {tilt}" for index, tilt in missing])
+    unset = "" if "CA_SV_TL_COUNT" in params else " (not set in the input)"
+    rotors = "the rotor" if len(missing) == 1 else "these rotors"
+    result.findings.append(
+        _finding(
+            "CA022",
+            f"{_join(labels)}: {assigned}, but CA_SV_TL_COUNT is {tilts}{unset}; "
+            f"PX4 treats {rotors} as not tilting",
+            actuators=labels,
+        )
+    )
+
+
 def check(engine_result: dict, options: Options = Options(), params: dict[str, str] | None = None) -> Result:
     """Apply the rules to the engine output.
 
@@ -275,6 +319,7 @@ def check(engine_result: dict, options: Options = Options(), params: dict[str, s
 
     if params is not None:
         _check_uncounted_rotors(engine_result, params, result)
+        _check_tilt_servos(engine_result, params, result)
 
     for matrix in engine_result.get("matrices", []):
         if _has_non_finite(matrix):

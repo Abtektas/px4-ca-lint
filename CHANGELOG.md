@@ -18,6 +18,9 @@ Versions are explained in [docs/versioning.md](docs/versioning.md).
   change, with the tilt servos in the hover position, and says so in a note.
   The matrices PX4 uses during the transition and in forward flight are not
   covered.
+- Rule CA022: a rotor is assigned to a tilt servo that does not exist
+  (`CA_ROTORn_TILT` above `CA_SV_TL_COUNT`), so PX4 treats it as not tilting.
+  New example `examples/tiltrotor_tilt_servo_missing.params`.
 
 ### Changed
 

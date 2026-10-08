@@ -179,6 +179,7 @@ the matrices and are not part of it.
 | [CA011](rules/CA011.md) | warning | thrust command to an actuator that produces no thrust on that axis |
 | [CA020](rules/CA020.md) | warning | a motor is not used for roll or pitch |
 | [CA021](rules/CA021.md) | warning | a rotor is configured but not counted by `CA_ROTOR_COUNT` |
+| [CA022](rules/CA022.md) | warning | a rotor is assigned to a tilt servo that does not exist |
 
 CA002 needs a PX4 version newer than v1.17.0; with the prebuilt engines the
 report says that it was not checked.
