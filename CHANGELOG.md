@@ -3,7 +3,7 @@
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions are explained in [docs/versioning.md](docs/versioning.md).
 
-## 0.3.0 - 2026-10-08
+## 0.3.0 - 2026-10-09
 
 Prebuilt engines contain the control allocation code of PX4 v1.17.0
 (`engine_schema` 1), as in 0.2.0.
